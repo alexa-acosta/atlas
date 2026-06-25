@@ -53,6 +53,8 @@ class OutputFormatter:
             l for l in summary.splitlines()
             if not l.strip().endswith("likely fraudulent score")
             and not l.strip().endswith("likely fraudulent")
+            and not l.strip().startswith("-")   # ← add this
+            and not l.strip().startswith("•")   # ← and this
         ]
         clean = "\n".join(lines).strip()
         if not clean:

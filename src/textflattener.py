@@ -33,7 +33,6 @@ class TextFlattener:
 
     def fix_encoding(self, text: str) -> str:
         text = ftfy.fix_text(text)
-        text = bytes_string_to_string(text)
         text = replace_unicode_quotes(text)
         return text
 

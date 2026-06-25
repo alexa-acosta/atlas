@@ -20,8 +20,8 @@ class Gemini:
     {results.to_string()}
     """
 
-    interaction = self.client.interactions.create(
-      model="gemini-2.5-flash"
+    interaction = self.client.interactions.create (
+      model="gemini-2.5-flash",
       system_instruction="""You are a cybersecurity expert with 20+ years of experience.
 
       Analyze the provided job posting, recruiter communication, URLs, email authentication results, and security scan results.

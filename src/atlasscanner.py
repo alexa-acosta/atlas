@@ -22,7 +22,7 @@ class AtlasScanner:
         self.scorer = Scorer()
         self.output_formatter = OutputFormatter()
 
-    def scan(self, raw_user_input):
+    def scan(self, raw_user_input: str, mode: str = "unknown", source: str = "") -> ScanResult:
         flattened_input = self.text_flattener.flatten(raw_user_input)
         parsed_input = self.parser.parse(flattened_input)
         scan_input = ScanInput(raw_user_input, flattened_input, parsed_input)
@@ -45,9 +45,11 @@ class AtlasScanner:
         save_scan(
             scan_input.raw_user_input,
             scan_result.risk_score,
-            scan_result.verdict
+            scan_result.verdict,
+            mode=mode, 
+            source=source
         )
-        self.output_formatter.display(scan_result)
+        self.output_formatter.display(scan_result, mode=mode, source=source)
         return scan_result
 
     def _scan_virustotal(self, scan_input):

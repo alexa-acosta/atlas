@@ -44,4 +44,6 @@ class VirusTotal:
 
     response = requests.get(url, headers=headers)
 
+    if not response.text.strip():
+        return {}
     return response.json()
