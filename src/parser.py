@@ -7,7 +7,8 @@ from unstructured.cleaners.extract import (
     extract_datetimetz
 )
 from parsedresult import ParsedResult
-from flattenedtext import FlattenedText
+from src.flattenedtext import FlattenedText
+
 
 class Parser:
     def parse(self, flattened: FlattenedText) -> ParsedResult:
