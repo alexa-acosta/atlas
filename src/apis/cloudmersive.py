@@ -29,4 +29,7 @@ class CloudmersiveClient:
         response = requests.post(self.api_url, headers=headers, json=body)
 
         time.sleep(2) # placeholder for future use where Cloudmersive analyzes multiple ScanInputs
+
+        if not response.text.strip():
+            return {}
         return response.json()

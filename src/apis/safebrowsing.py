@@ -5,18 +5,32 @@ class SafeBrowsing:
     def __init__(self):
         self.api_key = os.getenv('SAFE_BROWSING_KEY')
 
-    def check_url(self, url: str):
-        api_url = "https://safebrowsing.googleapis.com/v5/urls:search"
+    def check_url(self, url: str) -> dict:
+        api_url = "https://safebrowsing.googleapis.com/v4/threatMatches:find"
 
-        params = {
-            "key": self.api_key,
-            "url": url
+        body = {
+            "client": {
+                "clientId": "atlas",
+                "clientVersion": "1.0"
+            },
+            "threatInfo": {
+                "threatTypes": [
+                    "MALWARE", "SOCIAL_ENGINEERING",
+                    "UNWANTED_SOFTWARE", "POTENTIALLY_HARMFUL_APPLICATION"
+                ],
+                "platformTypes": ["ANY_PLATFORM"],
+                "threatEntryTypes": ["URL"],
+                "threatEntries": [{"url": url}]
+            }
         }
 
-        headers = {
-            "User-Agent": "Atlas/1.0"
-        }
+        response = requests.post(
+            api_url,
+            json=body,
+            params={"key": self.api_key}
+        )
 
-        response = requests.get(api_url, params=params, headers=headers)
-
-        return response.json()
+        try:
+            return response.json()
+        except Exception:
+            return {}

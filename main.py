@@ -111,7 +111,7 @@ def _run_all(inputs: list):
     scanner = AtlasScanner()
     for content, mode, source in inputs:
         try:
-            scanner.scan(content)
+            scanner.scan(content, mode=mode, source=source) 
         except KeyboardInterrupt:
             print(f"\n  {YEL}Scan interrupted.{R}\n")
             break
