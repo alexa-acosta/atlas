@@ -19,4 +19,4 @@ class SafeBrowsing:
 
         response = requests.get(api_url, params=params, headers=headers)
 
-        return response.json(), response.text
+        return response.json()

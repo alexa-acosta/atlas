@@ -45,13 +45,15 @@ class APIResults:
                 sections.append(f"Categories: {', '.join(unique_cats)}")
 
         if self.np_result:
-            sections.append("\n=== NoPhishy Results ===")
-            is_phishing = self.np_result.get("isPhishing")
-            confidence  = self.np_result.get("confidence")
-            if is_phishing is not None:
-                sections.append(f"Phishing detected: {is_phishing}")
-            if confidence is not None:
-                sections.append(f"Confidence: {confidence}")
+            sections.append("\n=== Safe Browsing Results ===")
+            threat = self.np_result.get("threat")
+            matches = self.np_result.get("matches") or self.np_result.get("threatMatches")
+            if threat:
+                sections.append(f"Threat: {threat}")
+            elif matches:
+                sections.append(f"Threat matches: {matches}")
+            else:
+                sections.append("No threat data returned.")
 
         if self.cm_result:
             sections.append("\n=== Cloudmersive Results ===")

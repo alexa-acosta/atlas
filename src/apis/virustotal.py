@@ -3,7 +3,7 @@ import requests
 import base64
 
 # Rate limit: 4 request per minute, 500/day
-# Each method returns a dictionary first (for storage) then returns it as a string second (for Gemini)
+# Each method returns a dictionary for storage and Gemini context
 
 class VirusTotal:
   def __init__(self):
@@ -18,7 +18,7 @@ class VirusTotal:
     }
 
     response = requests.get(url, headers=headers)
-    return response.json(), response.text
+    return response.json()
   
   def scan_url(self, url: str):
     url_id = base64.urlsafe_b64encode(url.encode()).decode().strip("=")
@@ -32,7 +32,7 @@ class VirusTotal:
 
     response = requests.get(check_url, headers=headers)
 
-    return response.json(), response.text
+    return response.json()
 
   def scan_domain(self, domain: str):
     url = f"https://www.virustotal.com/api/v3/domains/{domain}"
@@ -44,4 +44,4 @@ class VirusTotal:
 
     response = requests.get(url, headers=headers)
 
-    return response.json(), response.text
+    return response.json()
