@@ -25,3 +25,37 @@ class Parser:
             email_headers=email_headers,
             cleaned_text=cleaned_text
         )
+    
+    def extract_urls(self, text: str) -> list:
+        urls = []
+
+        for word in text.split():
+            word = word.strip(".,!<>\"'")
+
+            if word.startswith("http://") or word.startswith("https://"):
+                urls.append(word)
+            elif word.startswith("www."):
+                urls.append("https://" + word)
+
+        return self.remove_duplicates(urls)
+
+    def remove_duplicates(self, items: list) -> list:
+        unique_items = []
+
+        for item in items:
+            if item not in unique_items:
+                unique_items.append(item)
+
+        return unique_items
+    
+    def extract_domains(self, urls: list) -> list:
+        domains = []
+
+        for url in urls:
+            parsed_url = urlparse(url)
+            domain = parsed_url.netloc
+
+            if domain:
+                domains.append(domain)
+        
+        return self.remove_duplicates(domains)
