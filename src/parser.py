@@ -6,7 +6,7 @@ from unstructured.cleaners.extract import (
     extract_ip_address_name,
     extract_datetimetz
 )
-from parsedresult import ParsedResult
+from src.parsedresult import ParsedResult
 from src.flattenedtext import FlattenedText
 
 

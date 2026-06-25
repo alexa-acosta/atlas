@@ -9,7 +9,7 @@ from unstructured.cleaners.core import (
     replace_unicode_quotes,
     bytes_string_to_string
 )
-from flattenedtext import FlattenedText
+from src.flattenedtext import FlattenedText
 
 class TextFlattener:
     def flatten(self, raw_input: str) -> FlattenedText:

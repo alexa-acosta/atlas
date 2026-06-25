@@ -105,12 +105,13 @@ def _scan_session():
             _err("Invalid choice.")
 
 def _run_all(inputs: list):
-    from src.scanner import run_scan
+    from src.atlasscanner import AtlasScanner
     _clear()
 
+    scanner = AtlasScanner()
     for content, mode, source in inputs:
         try:
-            run_scan(content, mode=mode, source=source)
+            scanner.scan(content)
         except KeyboardInterrupt:
             print(f"\n  {YEL}Scan interrupted.{R}\n")
             break
