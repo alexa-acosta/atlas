@@ -15,7 +15,7 @@ class TextFlattener:
     def flatten(self, raw_input: str) -> FlattenedText:
         original_text = raw_input
 
-        if os.path.exists(raw_input):
+        if os.path.exists(raw_input): # checks if input is actually a file path to grab text from
             raw_input = self.extract_text_from_document(raw_input)
 
         clean_text = self.fix_encoding(raw_input)
