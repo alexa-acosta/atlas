@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import re
 from src.apiresults import APIResults
 from src.scanresult import ScanResult
