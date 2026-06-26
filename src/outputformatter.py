@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from src.scanresult import ScanResult
 
 R    = "\033[0m"
