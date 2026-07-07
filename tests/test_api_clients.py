@@ -141,5 +141,26 @@ class TestScraper(unittest.TestCase):
     self.assertEqual(get.call_args.kwargs["params"]["api_key"], "scraper-key")
     self.assertEqual(get.call_args.kwargs["params"]["url"], "https://example.com/job")
 
+  # test status_code
+  def test_fetch_page_returns_empty_dict_for_empty_response(self):
+    response = Mock()
+    response.status_code = 403
+    response.text = "Invalid API key"
+    with patch.dict("os.environ", {"SCRAPERAPI_KEY": "scraper-key"}):
+      client = Scraper()
+    with patch("src.apis.scraper.requests.get", return_value=response):
+      result = Scraper().fetch_page("https://example.com/job")
+    self.assertEqual(result, {})
+
+  # test blank
+  def test_fetch_page_returns_empty_dict_for_empty_response(self):
+    response = Mock()
+    response.status_code = 200
+    response.text = "  "    
+    with patch("src.apis.scraper.requests.get", return_value=response):
+      result = Scraper().fetch_page("https://example.com/job")
+    self.assertEqual(result, {})
+
+
 if __name__ == "__main__":
     unittest.main()
