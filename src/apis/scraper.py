@@ -16,7 +16,7 @@ class Scraper:
     response = requests.get(self.api_url, params=api_data, timeout=60)
 
 
-    if not response.text.strip():
+    if response.status_code != 200 or not response.text.strip():
       return {}
     return {
       "url": url,
