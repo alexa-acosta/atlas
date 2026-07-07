@@ -142,7 +142,7 @@ class TestScraper(unittest.TestCase):
     self.assertEqual(get.call_args.kwargs["params"]["url"], "https://example.com/job")
 
   # test status_code
-  def test_fetch_page_returns_empty_dict_for_empty_response(self):
+  def test_fetch_page_returns_empty_dict_for_not_200_status(self):
     response = Mock()
     response.status_code = 403
     response.text = "Invalid API key"
