@@ -49,13 +49,14 @@ class AtlasScanner:
       )
 
       scan_result = self.scorer.calculate_score(api_results)
-      save_scan(
+        scan_id = save_scan(
           scan_input.raw_user_input,
           scan_result.risk_score,
           scan_result.verdict,
-          mode=mode, 
+            mode=mode,
           source=source
       )
+        scan_result.scan_id = scan_id
       self.output_formatter.display(scan_result, mode=mode, source=source)
       return scan_result
 
