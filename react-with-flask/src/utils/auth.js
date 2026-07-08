@@ -1,4 +1,4 @@
-const API = "http://localhost:5000";
+const API = "";
 
 export async function login(email, password) {
   const res = await fetch(`${API}/api/login`, {
