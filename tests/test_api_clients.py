@@ -7,6 +7,7 @@ from unittest.mock import Mock, patch
 from src.apis.cloudmersive import CloudmersiveClient
 from src.apis.safebrowsing import SafeBrowsing
 from src.apis.virustotal import VirusTotal
+from src.apis.scraper import Scraper
 
 
 class TestVirusTotal(unittest.TestCase):
@@ -121,6 +122,44 @@ class TestGemini(unittest.TestCase):
         self.assertEqual(create_kwargs["model"], "gemini-2.5-flash")
         self.assertIn("Flattened input", create_kwargs["input"])
         self.assertIn("API context", create_kwargs["input"])
+
+# test scraper api
+class TestScraper(unittest.TestCase):
+  def test_fetch_and_returns_dict_success(self):
+    response = Mock()
+    response.status_code = 200
+    response.text = "<html><body>Job posting</body></html>"
+    with patch.dict("os.environ", {"SCRAPERAPI_KEY": "scraper-key"}):
+      client = Scraper()
+    with patch("src.apis.scraper.requests.get", return_value=response) as get:
+      result = client.fetch_page("https://example.com/job")
+    self.assertEqual(result, {
+      "url": "https://example.com/job",
+      "status_code": 200,
+      "html": "<html><body>Job posting</body></html>"
+    })
+    self.assertEqual(get.call_args.kwargs["params"]["api_key"], "scraper-key")
+    self.assertEqual(get.call_args.kwargs["params"]["url"], "https://example.com/job")
+
+  # test status_code
+  def test_fetch_page_returns_empty_dict_for_not_200_status(self):
+    response = Mock()
+    response.status_code = 403
+    response.text = "Invalid API key"
+    with patch.dict("os.environ", {"SCRAPERAPI_KEY": "scraper-key"}):
+      client = Scraper()
+    with patch("src.apis.scraper.requests.get", return_value=response):
+      result = Scraper().fetch_page("https://example.com/job")
+    self.assertEqual(result, {})
+
+  # test blank
+  def test_fetch_page_returns_empty_dict_for_empty_response(self):
+    response = Mock()
+    response.status_code = 200
+    response.text = "  "    
+    with patch("src.apis.scraper.requests.get", return_value=response):
+      result = Scraper().fetch_page("https://example.com/job")
+    self.assertEqual(result, {})
 
 
 if __name__ == "__main__":

@@ -100,7 +100,7 @@ class TestAtlasScanner(unittest.TestCase):
         self.assertEqual(scanner._scan_safebrowsing(no_targets), {})
         self.assertEqual(scanner._scan_cloudmersive(no_targets), {"CleanResult": True})
         scanner.cloudmersive.analyze_language.assert_called_once_with("clean")
-
+    
 
 if __name__ == "__main__":
     unittest.main()
