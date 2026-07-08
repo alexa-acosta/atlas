@@ -2,6 +2,7 @@ from src.apis.cloudmersive import CloudmersiveClient
 from src.apis.gemini import Gemini
 from src.apis.safebrowsing import SafeBrowsing
 from src.apis.virustotal import VirusTotal
+from src.apis.ipqualityscore import IPQualityScore
 from src.apiresults import APIResults
 from src.database import save_scan
 from src.outputformatter import OutputFormatter
@@ -19,6 +20,7 @@ class AtlasScanner:
         self.virustotal = VirusTotal()
         self.safebrowsing = SafeBrowsing()
         self.cloudmersive = CloudmersiveClient()
+        self.ipqs = IPQualityScore()
         self.gemini = Gemini()
         self.scorer = Scorer()
         self.output_formatter = OutputFormatter()
@@ -37,11 +39,13 @@ class AtlasScanner:
       vt_result = self._scan_virustotal(scan_input)
       np_result = self._scan_safebrowsing(scan_input)
       cm_result = self._scan_cloudmersive(scan_input)
+      ipqs_result = self._scan_ipqs(scan_input)
 
       api_results = APIResults(
           vt_result=vt_result,
           np_result=np_result,
           cm_result=cm_result
+          ipqs_result=ipqs_result
       )
       api_results.gemini_text = self.gemini.analyze_results(
           api_results,
@@ -91,3 +95,12 @@ class AtlasScanner:
             scan_input.flattened_user_input.cleaned_text
         )
         return result
+
+    def _scan_ipqs(self, scan_input):
+      parsed_input = scan_input.parsed_input
+      sender_email = parsed_input.email_headers.get("From")
+
+      if sender_email:
+        result = self.ipqs.check_email(sender_email)
+        return result
+      return {}

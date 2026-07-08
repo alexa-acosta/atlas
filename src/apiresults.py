@@ -7,6 +7,7 @@ class APIResults:
     vt_result: dict = field(default_factory=dict)
     np_result: dict = field(default_factory=dict)
     cm_result: dict = field(default_factory=dict)
+    ipqs_result: dict = field(default_factory=dict)
     gemini_text: str | None = None
 
     def get_vt(self) -> dict:

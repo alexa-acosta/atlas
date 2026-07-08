@@ -10,6 +10,7 @@ class Scorer:
     W_GEMINI = 0.55
     W_VIRUSTOTAL = 0.25
     W_CLOUDMERSIVE = 0.20
+    #  40, 20, 20, 20
 
     def calculate_score(self, results: APIResults) -> ScanResult:
         vt_score = self._score_virustotal(results.vt_result)
