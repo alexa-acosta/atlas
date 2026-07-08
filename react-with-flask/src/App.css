@@ -1,0 +1,245 @@
+@import url("https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Playfair+Display:wght@400;700&display=swap");
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg: #081516;
+  --bg-card: #092d31;
+  --bg-input: #435a5c;
+  --teal: #156b75;
+  --teal-light: #2e9194;
+  --dark-teal: #081516;
+  --text: #e8f0ee;
+  --text-dim: #7aa2a8;
+  --border: #1e3d4a;
+  --font-mono: "Courier Prime", "Courier New", monospace;
+  --font-serif: "Playfair Display", Georgia, serif;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font-mono);
+  min-height: 100vh;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 2.5rem;
+}
+
+.navbar-logo {
+  font-family: var(--font-serif);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text);
+  text-decoration: none;
+  letter-spacing: 0.05em;
+}
+
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+}
+
+.navbar-links a {
+  color: var(--text);
+  text-decoration: none;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  letter-spacing: 0.05em;
+}
+
+.navbar-links a:hover {
+  color: var(--teal-light);
+}
+
+.btn {
+  background-color: var(--teal);
+  color: var(--text);
+  border: none;
+  border-radius: 999px;
+  padding: 0.55rem 1.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn:hover {
+  background-color: var(--teal-light);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--teal);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 0.55rem 1.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-outline:hover {
+  background-color: var(--teal);
+}
+
+.login-btn {
+  background-color: var(--dark-teal);
+  color: var(--text);
+  border: none;
+  border-radius: 999px;
+  padding: 0.55rem 1.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.login-btn:hover {
+  background-color: var(--teal);
+}
+
+.login-btn-outline {
+  background: transparent;
+  border: 1px solid var(--dark-teal);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 0.55rem 1.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.login-btn-outline:hover {
+  background-color: var(--dark-teal);
+}
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-content {
+  padding: 4rem 2.5rem;
+  max-width: 1100px;
+}
+
+.page-title {
+  font-family: var(--font-serif);
+  font-size: 3.5rem;
+  font-weight: 400;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+}
+
+.page-subtitle {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--text);
+  max-width: 700px;
+  margin-bottom: 2rem;
+}
+
+.card {
+  background-color: var(--bg-card);
+  border-radius: 12px;
+  padding: 2.5rem;
+}
+
+.input-dark {
+  background-color: var(--bg-input);
+  border-color: #ffffff;
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  width: 100%;
+  outline: none;
+}
+
+.input-dark::placeholder {
+  color: var(--text-dim);
+}
+
+.input-dark:focus {
+  box-shadow: 0 0 0 2px var(--teal);
+}
+
+textarea.input-dark {
+  resize: vertical;
+  min-height: 220px;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.modal {
+  background: var(--bg-card);
+  border-radius: 12px;
+  padding: 2rem 2.5rem;
+  min-width: 380px;
+  max-width: 520px;
+  position: relative;
+}
+
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1.25rem;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.save-link {
+  position: fixed;
+  bottom: 2rem;
+  right: 2.5rem;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  text-decoration: none;
+  letter-spacing: 0.05em;
+}
+
+.save-link:hover {
+  color: var(--teal-light);
+}
+
+textarea {
+  resize: none;
+}
+
+tbody tr:hover {
+  background: var(--teal-light) !important;
+  transition: background 0.15s;
+}
