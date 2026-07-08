@@ -66,6 +66,15 @@ def get_scan_by_id(scan_id: int) -> dict | None:
     return _to_dict(row) if row else None
 
 
+def list_scans(limit: int = 20) -> list[dict]:
+    with _conn() as c:
+        rows = c.execute(
+            "SELECT id, timestamp, mode, source, risk_score, verdict "
+            "FROM scans ORDER BY id DESC LIMIT ?", (limit,)
+        ).fetchall()
+    return [_to_history_dict(r) for r in rows]
+
+
 def get_scan_history(limit: int = 20):
     with _conn() as c:
         rows = c.execute(
@@ -122,4 +131,11 @@ def _to_dict(row: tuple) -> dict:
     return {
         "id": row[0], "timestamp": row[1], "mode": row[2],
         "source": row[3], "risk_score": row[4], "verdict": row[5], "raw_input": row[6],
+    }
+
+
+def _to_history_dict(row: tuple) -> dict:
+    return {
+        "id": row[0], "timestamp": row[1], "mode": row[2],
+        "source": row[3], "risk_score": row[4], "verdict": row[5],
     }
