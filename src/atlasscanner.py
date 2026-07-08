@@ -10,6 +10,7 @@ from src.scaninput import ScanInput
 from src.scanresult import ScanResult
 from src.scorer import Scorer
 from src.textflattener import TextFlattener
+from src.fetcher import fetch_url
 
 class AtlasScanner:
     def __init__(self):
@@ -23,6 +24,12 @@ class AtlasScanner:
         self.output_formatter = OutputFormatter()
 
     def scan(self, raw_user_input: str, mode: str = "unknown", source: str = "") -> ScanResult:
+      if raw_user_input.strip().startswith("http"):
+        scraped = fetch_url(raw_user_input.strip())
+        if not scraped:
+          raise ValueError(f"Couldn't fetch content from: {raw_user_input}") 
+        raw_user_input = scraped
+        
         flattened_input = self.text_flattener.flatten(raw_user_input)
         parsed_input = self.parser.parse(flattened_input)
         scan_input = ScanInput(raw_user_input, flattened_input, parsed_input)
