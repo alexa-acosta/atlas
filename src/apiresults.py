@@ -19,6 +19,9 @@ class APIResults:
     def get_cm(self) -> dict:
         return self.cm_result
 
+    def get_ipqs(self) -> dict:
+        return self.ipqs_result
+
     def to_string(self) -> str:
     # formats all API results into a single block for the Gemini prompt
     # Gemini's analyze_results() receives this as context
@@ -78,4 +81,22 @@ class APIResults:
                         f"Flagged URLs: {len(flagged)} / {len(url_results)}"
                     )
 
+        if self.ipqs_result:
+          sections.append("\n=== Email Reputation Results (IPQS) ===")
+          fraud_score = self.ipqs_result.get("fraud_score")
+          if fraud_score is not None:
+            sections.append(f"Fraud score: {fraud_score}/100")
+          if self.ipqs_result.get("disposable"):
+            sections.append("Disposable email address: True")
+          if self.ipqs_result.get("recent_abuse"):
+            sections.append("Recent abuse reported: True")
+          if self.ipqs_result.get("valid") is False:
+            sections.append("Email failed validation: True")
+          first_seen = self.ipqs_result.get("first_seen") or {}
+          if first_seen.get("human"):
+            sections.append(f"Sender first seen: {first_seen['human']}")
+
+
         return "\n".join(sections) if sections else "No API results available."
+
+      

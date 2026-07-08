@@ -44,7 +44,7 @@ class AtlasScanner:
       api_results = APIResults(
           vt_result=vt_result,
           np_result=np_result,
-          cm_result=cm_result
+          cm_result=cm_result,
           ipqs_result=ipqs_result
       )
       api_results.gemini_text = self.gemini.analyze_results(
