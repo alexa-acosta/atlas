@@ -25,6 +25,14 @@ def init_db():
                 verdict    TEXT    NOT NULL
             )
         """)
+        c.execute("""
+            CREATE TABLE IF NOT EXISTS users (
+                id            INTEGER PRIMARY KEY AUTOINCREMENT,
+                email         TEXT    NOT NULL UNIQUE,
+                password_hash TEXT    NOT NULL,
+                created_at    TEXT    NOT NULL
+            )
+        """)
         try:
             c.execute("ALTER TABLE scans ADD COLUMN mode TEXT NOT NULL DEFAULT 'unknown'")
         except sqlite3.OperationalError:
@@ -84,6 +92,30 @@ def get_high_risk_scans() -> list[dict]:
             "FROM scans WHERE verdict = 'high'"
         ).fetchall()
     return [_to_dict(r) for r in rows]
+
+
+def create_user(email: str, password_hash: str) -> int | None:
+    try:
+        ts = datetime.now(timezone.utc).isoformat()
+        with _conn() as c:
+            cur = c.execute(
+                "INSERT INTO users (email, password_hash, created_at) VALUES (?, ?, ?)",
+                (email, password_hash, ts)
+            )
+            c.commit()
+            return cur.lastrowid
+    except sqlite3.IntegrityError:
+        return None
+
+
+def get_user_by_email(email: str) -> dict | None:
+    with _conn() as c:
+        row = c.execute(
+            "SELECT id, email, password_hash FROM users WHERE email = ?", (email,)
+        ).fetchone()
+    if not row:
+        return None
+    return {"id": row[0], "email": row[1], "password_hash": row[2]}
 
 
 def _to_dict(row: tuple) -> dict:
