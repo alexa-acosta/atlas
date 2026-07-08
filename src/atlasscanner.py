@@ -46,7 +46,7 @@ class AtlasScanner:
             scan_input.raw_user_input,
             scan_result.risk_score,
             scan_result.verdict,
-            mode=mode, 
+            mode=mode,
             source=source
         )
         scan_result.scan_id = scan_id

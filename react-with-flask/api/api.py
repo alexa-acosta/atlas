@@ -80,6 +80,7 @@ def me():
 
 @app.route("/api/scans", methods=["GET"])
 def scans():
+    # limits the number of scans returned by a request
     limit = request.args.get("limit", default=20, type=int)
     limit = min(max(limit, 1), 100)
     return jsonify({"scans": list_scans(limit=limit)}), 200
