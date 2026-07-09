@@ -1,5 +1,6 @@
 import os
 import sys
+import tempfile
 from pathlib import Path
 
 from flask import Flask, jsonify, request, session
@@ -96,18 +97,44 @@ def scan_detail(scan_id):
 
 @app.route("/api/scan", methods=["POST"])
 def scan():
-    data = request.get_json() or {}
-    raw_input = data.get("raw_input", "").strip()
-    mode = data.get("mode", "unknown")
-    source = data.get("source", "")
-
-    if not raw_input:
-        return jsonify({"error": "raw_input is required."}), 400
-
     from src.atlasscanner import AtlasScanner
 
-    scanner = AtlasScanner()
-    result = scanner.scan(raw_input, mode=mode, source=source)
+    mode = request.form.get("mode", "unknown") if request.files else "unknown"
+    source = request.form.get("source", "") if request.files else ""
+    raw_input = ""
+    temp_path = None
+
+    try:
+        if request.files:
+            uploaded_file = request.files.get("file")
+            if uploaded_file is None or not uploaded_file.filename:
+                return jsonify({"error": "file is required."}), 400
+
+            suffix = Path(uploaded_file.filename).suffix
+            source = source or uploaded_file.filename
+
+            with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as temp_file:
+                uploaded_file.save(temp_file.name)
+                temp_path = temp_file.name
+        else:
+            data = request.get_json(silent=True) or {}
+            raw_input = data.get("raw_input", "").strip()
+            mode = data.get("mode", "unknown")
+            source = data.get("source", "")
+
+            if not raw_input:
+                return jsonify({"error": "raw_input is required."}), 400
+
+        scanner = AtlasScanner()
+        scan_target = temp_path or raw_input
+        result = scanner.scan(scan_target, mode=mode, source=source)
+    except ValueError as exc:
+        return jsonify({"error": str(exc)}), 400
+    except Exception as exc:
+        return jsonify({"error": f"Scan failed: {exc}"}), 500
+    finally:
+        if temp_path and os.path.exists(temp_path):
+            os.remove(temp_path)
 
     return jsonify({
         "scan": {
