@@ -60,3 +60,12 @@ export async function getMe() {
   if (!res.ok) return null;
   return readApiResponse(res);
 }
+
+export async function getScans() {
+  const res = await fetch(`${API}/api/scans`, {
+    credentials: "include",
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error);
+  return data.scans;
+}
