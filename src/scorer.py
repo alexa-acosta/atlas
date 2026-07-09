@@ -95,10 +95,10 @@ class Scorer:
             first_seen_ts = first_seen.get('timestamp')
             if first_seen_ts:
                 age_days = (time.time() - first_seen_ts) / 86400
-            if age_days < 30:
-                score += 25
-            elif age_days < 180:
-                score += 10
+                if age_days < 30:
+                    score += 25
+                elif age_days < 180:
+                    score += 10
             return max(0, min(100, int(score)))
         except Exception:
             return None

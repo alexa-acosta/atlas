@@ -99,6 +99,7 @@ def scan_detail(scan_id):
 @app.route("/api/scan", methods=["POST"])
 def scan():
     from src.atlasscanner import AtlasScanner
+    from src.textflattener import TextFlattener
 
     mode = request.form.get("mode", "unknown") if request.files else "unknown"
     source = request.form.get("source", "") if request.files else ""
@@ -111,6 +112,7 @@ def scan():
             if uploaded_file is None or not uploaded_file.filename:
                 return jsonify({"error": "file is required."}), 400
 
+            raw_input = request.form.get("raw_input", "").strip()
             suffix = Path(uploaded_file.filename).suffix
             source = source or uploaded_file.filename
 
@@ -127,7 +129,16 @@ def scan():
                 return jsonify({"error": "raw_input is required."}), 400
 
         scanner = AtlasScanner()
-        scan_target = temp_path or raw_input
+        if temp_path and raw_input:
+            document_text = TextFlattener().extract_text_from_document(temp_path).strip()
+            scan_target = "\n\n".join(
+                part for part in [
+                    raw_input,
+                    f"=== Offer Letter ===\n{document_text}" if document_text else "",
+                ] if part
+            )
+        else:
+            scan_target = temp_path or raw_input
         result = scanner.scan(scan_target, mode=mode, source=source)
     except ValueError as exc:
         return jsonify({"error": str(exc)}), 400

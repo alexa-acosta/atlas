@@ -71,6 +71,7 @@ class TestAtlasScanner(unittest.TestCase):
             "medium",
             mode="job_post",
             source="pasted",
+            user_id=None,
         )
         scanner.output_formatter.display.assert_called_once_with(scan_result, mode="job_post", source="pasted")
 
@@ -110,6 +111,7 @@ class TestAtlasScanner(unittest.TestCase):
             "medium",
             mode="offer_letter",
             source=pdf_path,
+            user_id=None,
         )
 
     def test_prepare_raw_input_does_not_check_long_pasted_text_as_pdf_path(self):

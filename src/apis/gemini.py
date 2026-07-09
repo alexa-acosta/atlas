@@ -24,7 +24,7 @@ class Gemini:
       model="gemini-2.5-flash",
       system_instruction="""You are a cybersecurity expert with 20+ years of experience.
 
-      Analyze the provided job posting, recruiter communication, URLs, email authentication results, and security scan results.
+      Analyze the provided job posting, recruiter communication, URLs, offer letter, email authentication results, and security scan results.
       The four lines should be in estimation of how likely it is to be fraudulent.
 
       Rules:

@@ -1,10 +1,15 @@
-requests==2.31.0
+requests==2.34.2
 pytest==8.2.0
 pytest-cov==5.0.0
 python-dotenv==1.0.1
 ftfy==6.2.3
 html2text==2024.2.26
-unstructured==0.11.8
+unstructured==0.24.0
+unstructured-inference
+pdf2image
+pdfminer.six
+opencv-python
+pi-heif
 Flask
 Flask-Cors
 Flask-Bcrypt
