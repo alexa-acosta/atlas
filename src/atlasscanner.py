@@ -26,15 +26,15 @@ class AtlasScanner:
         self.output_formatter = OutputFormatter()
 
     def scan(self, raw_user_input: str, mode: str = "unknown", source: str = "") -> ScanResult:
-      if raw_user_input.strip().startswith("http"):
-        scraped = fetch_url(raw_user_input.strip())
+        if raw_user_input.strip().startswith("http"):
+            scraped = fetch_url(raw_user_input.strip())
         if not scraped:
-          raise ValueError(f"Couldn't fetch content from: {raw_user_input}") 
+            raise ValueError(f"Couldn't fetch content from: {raw_user_input}")
         raw_user_input = scraped
         
-      flattened_input = self.text_flattener.flatten(raw_user_input)
-      parsed_input = self.parser.parse(flattened_input)
-      scan_input = ScanInput(raw_user_input, flattened_input, parsed_input)
+        flattened_input = self.text_flattener.flatten(raw_user_input)
+        parsed_input = self.parser.parse(flattened_input)
+        scan_input = ScanInput(raw_user_input, flattened_input, parsed_input)
 
       vt_result = self._scan_virustotal(scan_input)
       np_result = self._scan_safebrowsing(scan_input)
@@ -52,16 +52,17 @@ class AtlasScanner:
           scan_input.flattened_user_input.cleaned_text
       )
 
-      scan_result = self.scorer.calculate_score(api_results)
-      save_scan(
-          scan_input.raw_user_input,
-          scan_result.risk_score,
-          scan_result.verdict,
-          mode=mode, 
-          source=source
-      )
-      self.output_formatter.display(scan_result, mode=mode, source=source)
-      return scan_result
+        scan_result = self.scorer.calculate_score(api_results)
+        scan_id = save_scan(
+            scan_input.raw_user_input,
+            scan_result.risk_score,
+            scan_result.verdict,
+            mode=mode,
+            source=source
+        )
+        scan_result.scan_id = scan_id
+        self.output_formatter.display(scan_result, mode=mode, source=source)
+        return scan_result
 
     def _scan_virustotal(self, scan_input):
         parsed_input = scan_input.parsed_input
