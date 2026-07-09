@@ -32,6 +32,32 @@ class TestTextFlattener(unittest.TestCase):
         extract.assert_called_once_with(file_path)
         self.assertEqual(flattened.cleaned_text, "Document text")
 
+    @patch.object(TextFlattener, "_partition_pdf_document")
+    def test_extract_text_from_document_uses_partition_pdf_for_pdf_files(self, partition_pdf_document):
+        partition_pdf_document.return_value = ["First page", "Second page"]
+
+        with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as temp_file:
+            file_path = temp_file.name
+        self.addCleanup(lambda: os.path.exists(file_path) and os.remove(file_path))
+
+        extracted = self.flattener.extract_text_from_document(file_path)
+
+        partition_pdf_document.assert_called_once_with(file_path)
+        self.assertEqual(extracted, "First page\nSecond page")
+
+    @patch("src.textflattener.partition")
+    def test_extract_text_from_document_uses_auto_partition_for_non_pdf_files(self, partition):
+        partition.return_value = ["Plain", "Document"]
+
+        with tempfile.NamedTemporaryFile(suffix=".txt", delete=False) as temp_file:
+            file_path = temp_file.name
+        self.addCleanup(lambda: os.path.exists(file_path) and os.remove(file_path))
+
+        extracted = self.flattener.extract_text_from_document(file_path)
+
+        partition.assert_called_once_with(filename=file_path)
+        self.assertEqual(extracted, "Plain\nDocument")
+
 
 if __name__ == "__main__":
     unittest.main()
