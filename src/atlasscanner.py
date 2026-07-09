@@ -25,7 +25,7 @@ class AtlasScanner:
         self.scorer = Scorer()
         self.output_formatter = OutputFormatter()
 
-    def scan(self, raw_user_input: str, mode: str = "unknown", source: str = "") -> ScanResult:
+    def scan(self, raw_user_input: str, mode: str = "unknown", source: str = "", user_id: int | None = None) -> ScanResult:
         if raw_user_input.strip().startswith("http"):
             scraped = fetch_url(raw_user_input.strip())
         if not scraped:
@@ -36,21 +36,21 @@ class AtlasScanner:
         parsed_input = self.parser.parse(flattened_input)
         scan_input = ScanInput(raw_user_input, flattened_input, parsed_input)
 
-      vt_result = self._scan_virustotal(scan_input)
-      np_result = self._scan_safebrowsing(scan_input)
-      cm_result = self._scan_cloudmersive(scan_input)
-      ipqs_result = self._scan_ipqs(scan_input)
+        vt_result = self._scan_virustotal(scan_input)
+        np_result = self._scan_safebrowsing(scan_input)
+        cm_result = self._scan_cloudmersive(scan_input)
+        ipqs_result = self._scan_ipqs(scan_input)
 
-      api_results = APIResults(
+        api_results = APIResults(
           vt_result=vt_result,
           np_result=np_result,
           cm_result=cm_result,
           ipqs_result=ipqs_result
-      )
-      api_results.gemini_text = self.gemini.analyze_results(
-          api_results,
-          scan_input.flattened_user_input.cleaned_text
-      )
+        )
+        api_results.gemini_text = self.gemini.analyze_results(
+            api_results,
+            scan_input.flattened_user_input.cleaned_text
+        )
 
         scan_result = self.scorer.calculate_score(api_results)
         scan_id = save_scan(
@@ -58,7 +58,8 @@ class AtlasScanner:
             scan_result.risk_score,
             scan_result.verdict,
             mode=mode,
-            source=source
+            source=source,
+            user_id=user_id
         )
         scan_result.scan_id = scan_id
         self.output_formatter.display(scan_result, mode=mode, source=source)

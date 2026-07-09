@@ -83,6 +83,7 @@ def scans():
     # limits the number of scans returned by a request
     limit = request.args.get("limit", default=20, type=int)
     limit = min(max(limit, 1), 100)
+    user_id = session.get("user_id")
     return jsonify({"scans": list_scans(limit=limit)}), 200
 
 
@@ -107,7 +108,7 @@ def scan():
     from src.atlasscanner import AtlasScanner
 
     scanner = AtlasScanner()
-    result = scanner.scan(raw_input, mode=mode, source=source)
+    result = scanner.scan(raw_input, mode=mode, source=source, user_id=session.get("user_id"))
 
     return jsonify({
         "scan": {
@@ -120,3 +121,8 @@ def scan():
             "indicators": result.indicators,
         }
     }), 201
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
+    
