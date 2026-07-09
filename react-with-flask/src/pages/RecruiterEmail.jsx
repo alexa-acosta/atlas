@@ -3,12 +3,14 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 
 export default function RecruiterEmail() {
-  const [content, setContent] = useState("");
+  const [content, setContent] = useState(() => sessionStorage.getItem("email") ?? "");
   const navigate = useNavigate();
+  const canSave = Boolean(content.trim());
 
   function handleSave() {
+    if (!canSave) return;
     sessionStorage.setItem("email", content);
-    navigate("/scan/confirm");
+    navigate("/scan");
   }
 
   return (
@@ -38,13 +40,15 @@ export default function RecruiterEmail() {
           onChange={(e) => setContent(e.target.value)}
         />
       </div>
-      <a
-        className="save-link"
-        onClick={handleSave}
-        style={{ cursor: "pointer" }}
-      >
-        save →
-      </a>
+      {canSave && (
+        <a
+          className="save-link"
+          onClick={handleSave}
+          style={{ cursor: "pointer" }}
+        >
+          save →
+        </a>
+      )}
     </div>
   );
 }

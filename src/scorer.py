@@ -53,14 +53,14 @@ class Scorer:
         try:
             stats = (
                 vt.get('data', {})
-                  .get('attributes', {})
-                  .get('last_analysis_stats', {})
+                .get('attributes', {})
+                .get('last_analysis_stats', {})
             )
             malicious   = stats.get('malicious', 0)
             suspicious  = stats.get('suspicious', 0)
             total       = sum(stats.values()) or 1
             ratio = (malicious + suspicious * 0.5) / total
-            return min(100, int(ratio * 100 * 3))  
+            return min(100, int(ratio * 100 * 3))
         except Exception:
             return None
 
@@ -78,32 +78,32 @@ class Scorer:
             return None
 
     def _score_ipqs(self, ipqs: dict) -> int | None:
-      if not ipqs:
-        return None
-      try: 
-        score = float(ipqs.get('fraud_score', 0))
-        if ipqs.get('recent_abuse'):
-          score += 20
-        if ipqs.get('disposable'):
-          score += 20
-        if ipqs.get('suspect'):
-          score += 10
-        if ipqs.get('valid') is False:
-          score += 15
-        
-        first_seen = ipqs.get('first_seen') or {}
-        first_seen_ts = first_seen.get('timestamp')
-        if first_seen_ts:
-          age_days = (time.time() - first_seen_ts) / 86400
-          if age_days < 30:
-            score += 25
-          elif age_days < 180:
-            score += 10
-        return max(0, min(100, int(score)))
-      except Exception:
-        return None
+        if not ipqs:
+            return None
+        try:
+            score = float(ipqs.get('fraud_score', 0))
+            if ipqs.get('recent_abuse'):
+                score += 20
+            if ipqs.get('disposable'):
+                score += 20
+            if ipqs.get('suspect'):
+                score += 10
+            if ipqs.get('valid') is False:
+                score += 15
 
-        
+            first_seen = ipqs.get('first_seen') or {}
+            first_seen_ts = first_seen.get('timestamp')
+            if first_seen_ts:
+                age_days = (time.time() - first_seen_ts) / 86400
+                if age_days < 30:
+                    score += 25
+                elif age_days < 180:
+                    score += 10
+            return max(0, min(100, int(score)))
+        except Exception:
+            return None
+
+
 
     def _score_gemini(self, text: str | None) -> int | None:
     # parses percentage from Gemini's output

@@ -22,7 +22,8 @@ def init_db():
                 source     TEXT    NOT NULL DEFAULT '',
                 raw_input  TEXT    NOT NULL,
                 risk_score INTEGER NOT NULL,
-                verdict    TEXT    NOT NULL
+                verdict    TEXT    NOT NULL,
+                user_id    INTEGER
             )
         """)
         c.execute("""
@@ -41,20 +42,40 @@ def init_db():
             c.execute("ALTER TABLE scans ADD COLUMN source TEXT NOT NULL DEFAULT ''")
         except sqlite3.OperationalError:
             pass
+        try:
+            c.execute("ALTER TABLE scans ADD COLUMN user_id INTEGER")
+        except sqlite3.OperationalError:
+            pass
         c.commit()
 
 
 def save_scan(raw_input: str, risk_score: int, verdict: str,
-              mode: str = "unknown", source: str = "") -> int:
+              mode: str = "unknown", source: str = "", user_id: int | None = None) -> int:
     ts = datetime.now(timezone.utc).isoformat()
     with _conn() as c:
         cur = c.execute(
-            "INSERT INTO scans (timestamp, mode, source, raw_input, risk_score, verdict) "
-            "VALUES (?, ?, ?, ?, ?, ?)",
-            (ts, mode, source, raw_input, risk_score, verdict),
+            "INSERT INTO scans (timestamp, mode, source, raw_input, risk_score, verdict, user_id) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?)",
+            (ts, mode, source, raw_input, risk_score, verdict, user_id),
         )
         c.commit()
         return cur.lastrowid
+
+
+def list_scans(limit: int = 20, user_id: int | None = None) -> list[dict]:
+    with _conn() as c:
+        if user_id is not None:
+            rows = c.execute(
+                "SELECT id, timestamp, mode, source, risk_score, verdict "
+                "FROM scans WHERE user_id = ? ORDER BY id DESC LIMIT ?",
+                (user_id, limit)
+            ).fetchall()
+        else:
+            rows = c.execute(
+                "SELECT id, timestamp, mode, source, risk_score, verdict "
+                "FROM scans ORDER BY id DESC LIMIT ?", (limit,)
+            ).fetchall()
+    return [_to_history_dict(r) for r in rows]
 
 
 def get_scan_by_id(scan_id: int) -> dict | None:
@@ -64,15 +85,6 @@ def get_scan_by_id(scan_id: int) -> dict | None:
             "FROM scans WHERE id = ?", (scan_id,)
         ).fetchone()
     return _to_dict(row) if row else None
-
-
-def list_scans(limit: int = 20) -> list[dict]:
-    with _conn() as c:
-        rows = c.execute(
-            "SELECT id, timestamp, mode, source, risk_score, verdict "
-            "FROM scans ORDER BY id DESC LIMIT ?", (limit,)
-        ).fetchall()
-    return [_to_history_dict(r) for r in rows]
 
 
 def get_scan_history(limit: int = 20):

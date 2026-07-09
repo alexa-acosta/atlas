@@ -3,13 +3,33 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 
 export default function JobPosting() {
-  const [description, setDescription] = useState("");
-  const [url, setUrl] = useState("");
+  const [description, setDescription] = useState(() => {
+    const saved = sessionStorage.getItem("job_post");
+    if (!saved) return "";
+
+    try {
+      return JSON.parse(saved).description ?? "";
+    } catch {
+      return "";
+    }
+  });
+  const [url, setUrl] = useState(() => {
+    const saved = sessionStorage.getItem("job_post");
+    if (!saved) return "";
+
+    try {
+      return JSON.parse(saved).url ?? "";
+    } catch {
+      return "";
+    }
+  });
   const navigate = useNavigate();
+  const canSave = Boolean(description.trim() || url.trim());
 
   function handleSave() {
+    if (!canSave) return;
     sessionStorage.setItem("job_post", JSON.stringify({ description, url }));
-    navigate("/scan/confirm");
+    navigate("/scan");
   }
 
   return (
@@ -66,13 +86,15 @@ export default function JobPosting() {
           </div>
         </div>
       </div>
-      <a
-        className="save-link"
-        onClick={handleSave}
-        style={{ cursor: "pointer" }}
-      >
-        save →
-      </a>
+      {canSave && (
+        <a
+          className="save-link"
+          onClick={handleSave}
+          style={{ cursor: "pointer" }}
+        >
+          save →
+        </a>
+      )}
     </div>
   );
 }

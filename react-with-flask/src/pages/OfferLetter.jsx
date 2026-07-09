@@ -4,7 +4,7 @@ import Navbar from "../components/Navbar";
 
 export default function OfferLetter() {
   const fileRef = useRef(null);
-  const [file, setFile] = useState(null);
+  const [file, setFile] = useState(() => window._offerLetterFile ?? null);
   const navigate = useNavigate();
 
   function handleFile(e) {
@@ -17,7 +17,7 @@ export default function OfferLetter() {
   function handleSave() {
     if (!file) return;
     sessionStorage.setItem("offer_letter_name", file.name);
-    navigate("/scan/confirm");
+    navigate("/scan");
   }
 
   function removeFile() {
