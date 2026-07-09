@@ -112,6 +112,28 @@ class TestAtlasScanner(unittest.TestCase):
             source=pdf_path,
         )
 
+    def test_prepare_raw_input_does_not_check_long_pasted_text_as_pdf_path(self):
+        module = import_atlasscanner_with_fake_gemini()
+        scanner = build_scanner(module)
+        raw_text = "About the job\n" + ("Journey with us. " * 40)
+
+        with patch.object(module.Path, "is_file") as is_file:
+            prepared = scanner._prepare_raw_input(raw_text)
+
+        is_file.assert_not_called()
+        self.assertEqual(prepared, raw_text)
+
+    def test_prepare_raw_input_does_not_check_long_single_line_text_as_pdf_path(self):
+        module = import_atlasscanner_with_fake_gemini()
+        scanner = build_scanner(module)
+        raw_text = "This is a pasted job description. " * 20
+
+        with patch.object(module.Path, "is_file") as is_file:
+            prepared = scanner._prepare_raw_input(raw_text)
+
+        is_file.assert_not_called()
+        self.assertEqual(prepared, raw_text)
+
     def test_scan_virustotal_prefers_url_then_domain_then_received_ip(self):
         module = import_atlasscanner_with_fake_gemini()
         scanner = build_scanner(module)

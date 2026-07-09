@@ -16,7 +16,7 @@ class TextFlattener:
     def flatten(self, raw_input: str) -> FlattenedText:
         original_text = raw_input
 
-        if os.path.exists(raw_input):  # checks if input is actually a file path to grab text from
+        if self.looks_like_file_path(raw_input) and os.path.exists(raw_input):
             raw_input = self.extract_text_from_document(raw_input)
 
         clean_text = self.fix_encoding(raw_input)
@@ -40,6 +40,21 @@ class TextFlattener:
         from unstructured.partition.pdf import partition_pdf
 
         return partition_pdf(filename=file_path, strategy="fast")
+
+    def looks_like_file_path(self, value: str) -> bool:
+        if not value or "\n" in value or "\r" in value:
+            return False
+
+        if len(value) > 255:
+            return False
+
+        path = Path(value).expanduser()
+
+        return (
+            path.is_absolute()
+            or value.startswith(("./", "../", "~"))
+            or path.suffix.lower() in {".pdf", ".doc", ".docx", ".txt", ".html", ".htm"}
+        )
 
     def fix_encoding(self, text: str) -> str:
         text = ftfy.fix_text(text)

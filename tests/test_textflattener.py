@@ -32,6 +32,24 @@ class TestTextFlattener(unittest.TestCase):
         extract.assert_called_once_with(file_path)
         self.assertEqual(flattened.cleaned_text, "Document text")
 
+    @patch("src.textflattener.os.path.exists")
+    def test_flatten_does_not_check_long_pasted_text_as_path(self, exists):
+        raw_text = "About the job\n" + ("Journey with us. " * 40)
+
+        flattened = self.flattener.flatten(raw_text)
+
+        exists.assert_not_called()
+        self.assertIn("About the job", flattened.cleaned_text)
+
+    @patch("src.textflattener.os.path.exists")
+    def test_flatten_does_not_check_long_single_line_text_as_path(self, exists):
+        raw_text = "This is a pasted job description. " * 20
+
+        flattened = self.flattener.flatten(raw_text)
+
+        exists.assert_not_called()
+        self.assertIn("pasted job description", flattened.cleaned_text)
+
     @patch.object(TextFlattener, "_partition_pdf_document")
     def test_extract_text_from_document_uses_partition_pdf_for_pdf_files(self, partition_pdf_document):
         partition_pdf_document.return_value = ["First page", "Second page"]

@@ -77,6 +77,12 @@ class AtlasScanner:
         return raw_user_input
 
     def _is_pdf_file(self, raw_user_input: str) -> bool:
+        if not raw_user_input or "\n" in raw_user_input or "\r" in raw_user_input:
+            return False
+
+        if len(raw_user_input) > 255:
+            return False
+
         return Path(raw_user_input).is_file() and Path(raw_user_input).suffix.lower() == ".pdf"
 
     def _scan_virustotal(self, scan_input):

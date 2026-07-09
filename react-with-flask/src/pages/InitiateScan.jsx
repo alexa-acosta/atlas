@@ -3,12 +3,13 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 
 function readStoredSubmissions() {
-  let jobPosting = { description: "", url: "" };
+  const savedJobPosting = sessionStorage.getItem("job_post");
+  let jobPosting;
 
   try {
-    jobPosting = JSON.parse(sessionStorage.getItem("job_post") ?? "{}");
+    jobPosting = savedJobPosting ? JSON.parse(savedJobPosting) : {};
   } catch {
-    jobPosting = { description: "", url: "" };
+    jobPosting = {};
   }
 
   const recruiterEmail = sessionStorage.getItem("email") ?? "";
