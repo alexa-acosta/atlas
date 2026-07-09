@@ -11,3 +11,5 @@ build/
 venv/
 .gitattributes
 .gitignore
+node_modules/
+react-with-flask/node_modules/
