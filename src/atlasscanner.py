@@ -27,9 +27,8 @@ class AtlasScanner:
         self.scorer = Scorer()
         self.output_formatter = OutputFormatter()
 
-    def scan(self, raw_user_input: str, mode: str = "unknown", source: str = "") -> ScanResult:
+    def scan(self, raw_user_input: str, mode: str = "unknown", source: str = "", user_id: int | None = None) -> ScanResult:
         raw_user_input = self._prepare_raw_input(raw_user_input)
-
         flattened_input = self.text_flattener.flatten(raw_user_input)
         parsed_input = self.parser.parse(flattened_input)
         scan_input = ScanInput(raw_user_input, flattened_input, parsed_input)
@@ -56,7 +55,8 @@ class AtlasScanner:
             scan_result.risk_score,
             scan_result.verdict,
             mode=mode,
-            source=source
+            source=source,
+            user_id=user_id
         )
         scan_result.scan_id = scan_id
         self.output_formatter.display(scan_result, mode=mode, source=source)
