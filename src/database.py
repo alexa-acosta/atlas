@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import sqlite3
 import os
 from datetime import datetime, timezone
@@ -23,7 +24,8 @@ def init_db():
                 raw_input  TEXT    NOT NULL,
                 risk_score INTEGER NOT NULL,
                 verdict    TEXT    NOT NULL,
-                user_id    INTEGER
+                user_id    INTEGER,
+                indicators TEXT NOT NULL DEFAULT '[]'
             )
         """)
         c.execute("""
@@ -47,16 +49,20 @@ def init_db():
         except sqlite3.OperationalError:
             pass
         c.commit()
+        try:
+            c.execute("ALTER TABLE scans ADD COLUMN indicators TEXT NOT NULL DEFAULT '[]'")
+        except sqlite3.OperationalError:
+            pass
 
 
 def save_scan(raw_input: str, risk_score: int, verdict: str,
-              mode: str = "unknown", source: str = "", user_id: int | None = None) -> int:
+              mode: str = "unknown", source: str = "", user_id: int | None = None, indicators: list[str] | None = None) -> int:
     ts = datetime.now(timezone.utc).isoformat()
     with _conn() as c:
         cur = c.execute(
-            "INSERT INTO scans (timestamp, mode, source, raw_input, risk_score, verdict, user_id) "
-            "VALUES (?, ?, ?, ?, ?, ?, ?)",
-            (ts, mode, source, raw_input, risk_score, verdict, user_id),
+            "INSERT INTO scans (timestamp, mode, source, raw_input, risk_score, verdict, user_id, indicators) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            (ts, mode, source, raw_input, risk_score, verdict, user_id, json.dumps(indicators or [])),
         )
         c.commit()
         return cur.lastrowid
@@ -66,13 +72,13 @@ def list_scans(limit: int = 20, user_id: int | None = None) -> list[dict]:
     with _conn() as c:
         if user_id is not None:
             rows = c.execute(
-                "SELECT id, timestamp, mode, source, risk_score, verdict "
+                "SELECT id, timestamp, mode, source, risk_score, verdict, indicators "
                 "FROM scans WHERE user_id = ? ORDER BY id DESC LIMIT ?",
                 (user_id, limit)
             ).fetchall()
         else:
             rows = c.execute(
-                "SELECT id, timestamp, mode, source, risk_score, verdict "
+                "SELECT id, timestamp, mode, source, risk_score, verdict, indicators "
                 "FROM scans ORDER BY id DESC LIMIT ?", (limit,)
             ).fetchall()
     return [_to_history_dict(r) for r in rows]
@@ -149,5 +155,5 @@ def _to_dict(row: tuple) -> dict:
 def _to_history_dict(row: tuple) -> dict:
     return {
         "id": row[0], "timestamp": row[1], "mode": row[2],
-        "source": row[3], "risk_score": row[4], "verdict": row[5],
+        "source": row[3], "risk_score": row[4], "verdict": row[5], "indicators": json.loads(row[6]),
     }

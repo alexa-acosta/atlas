@@ -185,7 +185,7 @@ export default function History() {
               >
                 x
               </button>
-              <h2 style={{ fontFamily: "var(--font-mono)" }}>
+              <h2 style={{ fontFamily: "var(--font-mono)", marginBottom: "0.5rem" }}>
                 Scan {selectedScan.id}
               </h2>
               <p
@@ -197,7 +197,7 @@ export default function History() {
               >
                 {new Date(selectedScan.timestamp).toLocaleString()}
               </p>
-              <h2>
+              <h2 style={{ marginBottom: "0.5rem" }}>
                 {selectedScan.mode === "job"
                   ? "Job Posting"
                   : selectedScan.mode === "email"
@@ -205,26 +205,31 @@ export default function History() {
                   : selectedScan.mode === "offer"
                   ? "Offer Letter"
                   : selectedScan.mode}
-                :
               </h2>
             <p style={{ marginBottom: "1.25rem" }}>{selectedScan.risk_score}/100</p>
 
             <h2 style={{ fontFamily: "var(--font-mono)" }}>
               Analysis
             </h2>
-            {/* we need to store gemini's output in the database to display here as 3 bullet points */}
-              <ul style={{ marginBottom: "1.25rem" , marginLeft: "1.25rem" }}>
-                  
-                  <li style={{ marginBottom: "1rem" }}></li>
-                  <li style={{ marginBottom: "1rem" }}></li>
-                  <li style={{ marginBottom: "1rem" }}></li>
-                </ul>
+            <ul style={{ marginBottom: "1.25rem" , marginLeft: "1.25rem", marginTop: "1rem" }}>
+              {selectedScan.indicators.map((indicator, index) => (
+                <li key={index} style={{ marginBottom: "1rem"}}>{indicator}</li>
+              ))}
+          </ul>
 
-            <h2 style={{ fontFamily: "var(--font-mono)" }}>
+            <h2 style={{ fontFamily: "var(--font-mono)", marginBottom: "0.5rem" }}>
               Suggestions
             </h2>
-            {/* same here, we don't have access to the suggestions to output it */}
-            <p style={{ marginBottom: "1.25rem" }}></p>
+            
+            <p style={{ marginBottom: "1.25rem" }}>
+              {selectedScan.verdict === "safe"
+              ? "This posting appears legitimate. Still proceed with caution."
+            : selectedScan.verdict === "medium"
+              ? "Some suspicious signals detected. Verify before proceeding."
+            : selectedScan.verdict === "high"
+              ? "High risk! Do not provide personal information or click any links."
+            : ""}
+            </p>
             </div>
           </div>
         )}
