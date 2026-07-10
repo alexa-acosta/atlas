@@ -3,6 +3,7 @@ from pathlib import Path
 import ftfy
 import html2text
 from email import message_from_string
+from pdfminer.high_level import extract_text
 from unstructured.partition.auto import partition
 from unstructured.cleaners.core import (
     clean,
@@ -30,16 +31,22 @@ class TextFlattener:
 
     def extract_text_from_document(self, file_path: str) -> str:
         if Path(file_path).suffix.lower() == ".pdf":
-            elements = self._partition_pdf_document(file_path)
+            try:
+                elements = self._partition_pdf_document(file_path)
+            except Exception:
+                elements = []
+            extracted_text = "\n".join(str(element) for element in elements).strip()
+            if not extracted_text:
+                extracted_text = extract_text(file_path).strip()
+            return extracted_text
         else:
             elements = partition(filename=file_path)
         return "\n".join(str(element) for element in elements)
 
     def _partition_pdf_document(self, file_path: str):
-        # Prefer text extraction for PDFs and let Unstructured fall back as needed.
         from unstructured.partition.pdf import partition_pdf
 
-        return partition_pdf(filename=file_path, strategy="fast")
+        return partition_pdf(filename=file_path, strategy="auto")
 
     def looks_like_file_path(self, value: str) -> bool:
         if not value or "\n" in value or "\r" in value:

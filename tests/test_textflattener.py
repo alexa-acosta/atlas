@@ -63,6 +63,47 @@ class TestTextFlattener(unittest.TestCase):
         partition_pdf_document.assert_called_once_with(file_path)
         self.assertEqual(extracted, "First page\nSecond page")
 
+    @patch("src.textflattener.extract_text")
+    @patch.object(TextFlattener, "_partition_pdf_document")
+    def test_extract_text_from_document_falls_back_to_pdfminer_for_empty_pdf_partition(self, partition_pdf_document, extract_text):
+        partition_pdf_document.return_value = []
+        extract_text.return_value = "Fallback PDF text"
+
+        with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as temp_file:
+            file_path = temp_file.name
+        self.addCleanup(lambda: os.path.exists(file_path) and os.remove(file_path))
+
+        extracted = self.flattener.extract_text_from_document(file_path)
+
+        partition_pdf_document.assert_called_once_with(file_path)
+        extract_text.assert_called_once_with(file_path)
+        self.assertEqual(extracted, "Fallback PDF text")
+
+    @patch("src.textflattener.extract_text")
+    @patch.object(TextFlattener, "_partition_pdf_document")
+    def test_extract_text_from_document_falls_back_to_pdfminer_for_pdf_partition_error(self, partition_pdf_document, extract_text):
+        partition_pdf_document.side_effect = RuntimeError("OCR unavailable")
+        extract_text.return_value = "Fallback PDF text"
+
+        with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as temp_file:
+            file_path = temp_file.name
+        self.addCleanup(lambda: os.path.exists(file_path) and os.remove(file_path))
+
+        extracted = self.flattener.extract_text_from_document(file_path)
+
+        partition_pdf_document.assert_called_once_with(file_path)
+        extract_text.assert_called_once_with(file_path)
+        self.assertEqual(extracted, "Fallback PDF text")
+
+    @patch("unstructured.partition.pdf.partition_pdf")
+    def test_partition_pdf_document_uses_auto_strategy(self, partition_pdf):
+        partition_pdf.return_value = ["PDF text"]
+
+        elements = self.flattener._partition_pdf_document("offer.pdf")
+
+        partition_pdf.assert_called_once_with(filename="offer.pdf", strategy="auto")
+        self.assertEqual(elements, ["PDF text"])
+
     @patch("src.textflattener.partition")
     def test_extract_text_from_document_uses_auto_partition_for_non_pdf_files(self, partition):
         partition.return_value = ["Plain", "Document"]

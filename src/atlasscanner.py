@@ -27,15 +27,8 @@ class AtlasScanner:
         self.scorer = Scorer()
         self.output_formatter = OutputFormatter()
 
-    def scan(
-        self,
-        raw_user_input: str,
-        mode: str = "unknown",
-        source: str = "",
-        user_id: int | None = None,
-        supplemental_inputs: list[tuple[str, str]] | None = None,
-    ) -> ScanResult:
-        raw_user_input = self._build_scan_input(raw_user_input, supplemental_inputs)
+    def scan(self, raw_user_input: str, mode: str = "unknown", source: str = "", user_id: int | None = None) -> ScanResult:
+        raw_user_input = self._prepare_raw_input(raw_user_input)
         flattened_input = self.text_flattener.flatten(raw_user_input)
         parsed_input = self.parser.parse(flattened_input)
         scan_input = ScanInput(raw_user_input, flattened_input, parsed_input)
@@ -70,25 +63,6 @@ class AtlasScanner:
         self.output_formatter.display(scan_result, mode=mode, source=source)
         return scan_result
 
-    def _build_scan_input(
-        self,
-        raw_user_input: str,
-        supplemental_inputs: list[tuple[str, str]] | None = None,
-    ) -> str:
-        sections = []
-        primary_input = self._prepare_raw_input(raw_user_input).strip()
-
-        if primary_input:
-            sections.append(primary_input)
-
-        for label, supplemental_input in supplemental_inputs or []:
-            prepared_input = self._prepare_raw_input(supplemental_input).strip()
-            if not prepared_input:
-                continue
-            sections.append(self._format_context_section(label, prepared_input))
-
-        return "\n\n".join(sections)
-
     def _prepare_raw_input(self, raw_user_input: str) -> str:
         candidate = raw_user_input.strip()
 
@@ -102,12 +76,6 @@ class AtlasScanner:
             return self.text_flattener.extract_text_from_document(candidate)
 
         return raw_user_input
-
-    def _format_context_section(self, label: str, content: str) -> str:
-        if not label:
-            return content
-
-        return f"=== {label} ===\n{content}"
 
     def _is_pdf_file(self, raw_user_input: str) -> bool:
         if not raw_user_input or "\n" in raw_user_input or "\r" in raw_user_input:

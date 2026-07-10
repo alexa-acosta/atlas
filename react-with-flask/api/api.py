@@ -99,11 +99,12 @@ def scan_detail(scan_id):
 @app.route("/api/scan", methods=["POST"])
 def scan():
     from src.atlasscanner import AtlasScanner
+    from src.textflattener import TextFlattener
 
     mode = request.form.get("mode", "unknown") if request.files else "unknown"
     source = request.form.get("source", "") if request.files else ""
     raw_input = ""
-    temp_path = None
+    temp_path = None # holds the file pathway to uploaded offer letter
 
     try:
         if request.files:
@@ -128,13 +129,15 @@ def scan():
                 return jsonify({"error": "raw_input is required."}), 400
 
         scanner = AtlasScanner()
-        supplemental_inputs = [("Offer Letter", temp_path)] if temp_path else None
-        result = scanner.scan(
-            raw_input,
-            mode=mode,
-            source=source,
-            supplemental_inputs=supplemental_inputs,
-        )
+        if temp_path:
+            document_text = TextFlattener().extract_text_from_document(temp_path).strip()
+            raw_input = "\n\n".join(
+                part for part in [
+                    raw_input,
+                    f"=== Offer Letter ===\n{document_text}" if document_text else "",
+                ] if part
+            )
+        result = scanner.scan(raw_input, mode=mode, source=source)
     except ValueError as exc:
         return jsonify({"error": str(exc)}), 400
     except Exception as exc:

@@ -11,7 +11,14 @@ from src.parsedresult import ParsedResult
 from src.scanresult import ScanResult
 
 
+_ATLASSCANNER_MODULE = None
+
+
 def import_atlasscanner_with_fake_gemini():
+    global _ATLASSCANNER_MODULE
+    if _ATLASSCANNER_MODULE is not None:
+        return _ATLASSCANNER_MODULE
+
     fake_google = types.ModuleType("google")
     fake_genai = types.ModuleType("google.genai")
     fake_types = types.ModuleType("google.genai.types")
@@ -28,7 +35,8 @@ def import_atlasscanner_with_fake_gemini():
         },
     ):
         module = importlib.import_module("src.atlasscanner")
-        return importlib.reload(module)
+        _ATLASSCANNER_MODULE = module
+        return module
 
 
 def build_scanner(module):
@@ -112,69 +120,6 @@ class TestAtlasScanner(unittest.TestCase):
             "medium",
             mode="offer_letter",
             source=pdf_path,
-            user_id=None,
-            indicators=["reason"],
-        )
-
-    def test_scan_merges_offer_letter_with_other_context_before_flattening(self):
-        module = import_atlasscanner_with_fake_gemini()
-        combined_input = "\n\n".join(
-            [
-                "=== Job Posting ===\nRemote security analyst role",
-                "=== Recruiter Email ===\nFrom: recruiter@example.com",
-                "=== Offer Letter ===\nPDF body text",
-            ]
-        )
-        flattened = FlattenedText(combined_input, "clean combined text")
-        parsed = ParsedResult([], [], [], {}, "clean combined text")
-        scan_result = ScanResult(40, "medium", "40% likely fraudulent score", ["reason"])
-
-        with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as temp_file:
-            pdf_path = temp_file.name
-        self.addCleanup(lambda: os.path.exists(pdf_path) and os.remove(pdf_path))
-
-        scanner = build_scanner(module)
-        scanner.text_flattener = Mock(
-            extract_text_from_document=Mock(return_value="PDF body text"),
-            flatten=Mock(return_value=flattened),
-        )
-        scanner.parser = Mock(parse=Mock(return_value=parsed))
-        scanner.virustotal = Mock(scan_url=Mock(return_value={}), scan_domain=Mock(return_value={}), scan_ip=Mock(return_value={}))
-        scanner.safebrowsing = Mock(check_url=Mock(return_value={}))
-        scanner.cloudmersive = Mock(analyze_language=Mock(return_value={"cm": True}))
-        scanner.gemini = Mock(analyze_results=Mock(return_value="40% likely fraudulent score"))
-        scanner.scorer = Mock(calculate_score=Mock(return_value=scan_result))
-        scanner.output_formatter = Mock()
-
-        raw_input = "\n\n".join(
-            [
-                "=== Job Posting ===\nRemote security analyst role",
-                "=== Recruiter Email ===\nFrom: recruiter@example.com",
-            ]
-        )
-
-        with patch.object(module, "save_scan") as save_scan:
-            result = scanner.scan(
-                raw_input,
-                mode="combined",
-                source="job post, recruiter email, offer letter.pdf",
-                supplemental_inputs=[("Offer Letter", pdf_path)],
-            )
-
-        self.assertIs(result, scan_result)
-        scanner.text_flattener.extract_text_from_document.assert_called_once_with(pdf_path)
-        scanner.text_flattener.flatten.assert_called_once_with(combined_input)
-        scanner.gemini.analyze_results.assert_called_once()
-        self.assertEqual(
-            scanner.gemini.analyze_results.call_args.args[1],
-            "clean combined text",
-        )
-        save_scan.assert_called_once_with(
-            combined_input,
-            40,
-            "medium",
-            mode="combined",
-            source="job post, recruiter email, offer letter.pdf",
             user_id=None,
             indicators=["reason"],
         )

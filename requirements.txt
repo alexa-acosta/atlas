@@ -6,6 +6,7 @@ ftfy==6.2.3
 html2text==2024.2.26
 unstructured==0.24.0
 unstructured-inference
+unstructured-pytesseract
 pdf2image
 pdfminer.six
 opencv-python
