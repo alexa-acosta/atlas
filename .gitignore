@@ -11,3 +11,4 @@ build/
 venv/
 .gitattributes
 .gitignore
+node_modules/
