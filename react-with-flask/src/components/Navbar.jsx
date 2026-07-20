@@ -15,8 +15,13 @@ export default function Navbar({ loggedIn = false }) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const isActive = (path) =>
+    location.pathname === path
+      ? { color: "var(--text)", fontWeight: "bold" }
+      : { color: "var(--text-dim)" };
+
   return (
-    <nav
+    <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       style={{
@@ -34,36 +39,36 @@ export default function Navbar({ loggedIn = false }) {
           ? "1px solid var(--border)"
           : "1px solid transparent",
         transition: "all 0.3s ease",
+        boxSizing: "border-box",
       }}
     >
+      {/* Logo */}
       <Link
-        to="/"
-        className="navbar-logo"
+        to={loggedIn ? "/home" : "/"}
         style={{
           color: "var(--teal-light)",
           textShadow: "0 0 8px rgba(46,145,148,0.4)",
+          fontFamily: "var(--font-serif)",
+          fontSize: "1.3rem",
+          fontWeight: 700,
+          letterSpacing: "0.15em",
+          textDecoration: "none",
         }}
       >
         ATLAS
       </Link>
 
-      <div className="navbar-links">
+      {/* Links */}
+      <div style={{ display: "flex", alignItems: "center", gap: "7rem" }}>
         {loggedIn ? (
           <>
-            <Link to="/home">start a scan</Link>
-            <Link to="/history">history</Link>
-            <Link to="/home">
-              <button className="btn">profile</button>
-            </Link>
-          </>
-        ) : (
-          <>
             <Link
-              to="/"
+              to="/home"
               style={{
-                fontWeight: location.pathname === "/" ? "bold" : "normal",
-                color:
-                  location.pathname === "/" ? "var(--text)" : "var(--text-dim)",
+                textDecoration: "none",
+                fontSize: "0.9rem",
+                fontFamily: "var(--font-mono)",
+                ...isActive("/home"),
               }}
             >
               home
@@ -71,22 +76,82 @@ export default function Navbar({ loggedIn = false }) {
             <Link
               to="/about"
               style={{
-                fontWeight: location.pathname === "/about" ? "bold" : "normal",
-                color:
-                  location.pathname === "/about"
-                    ? "var(--text)"
-                    : "var(--text-dim)",
+                textDecoration: "none",
+                fontSize: "0.9rem",
+                fontFamily: "var(--font-mono)",
+                ...isActive("/about"),
               }}
             >
               about us
             </Link>
-            <Link to="/login">
-              <button className="btn">get started</button>
+            <Link
+              to="/scan"
+              style={{
+                textDecoration: "none",
+                fontSize: "0.9rem",
+                fontFamily: "var(--font-mono)",
+                ...isActive("/scan"),
+              }}
+            >
+              start a scan
+            </Link>
+            <Link
+              to="/history"
+              style={{
+                textDecoration: "none",
+                fontSize: "0.9rem",
+                fontFamily: "var(--font-mono)",
+                ...isActive("/history"),
+              }}
+            >
+              history
+            </Link>
+            <Link to="/profile" style={{ textDecoration: "none" }}>
+              <button
+                className="btn"
+                style={{ padding: "0.4rem 1.2rem", fontSize: "0.85rem" }}
+              >
+                profile
+              </button>
+            </Link>
+          </>
+        ) : (
+          <>
+            <Link
+              to="/"
+              style={{
+                textDecoration: "none",
+                fontSize: "0.9rem",
+                fontFamily: "var(--font-mono)",
+                ...isActive("/"),
+              }}
+            >
+              home
+            </Link>
+            <Link
+              to="/about"
+              style={{
+                textDecoration: "none",
+                fontSize: "0.9rem",
+                fontFamily: "var(--font-mono)",
+                ...isActive("/about"),
+              }}
+            >
+              about us
+            </Link>
+            <Link to="/login" style={{ textDecoration: "none" }}>
+              <button
+                className="btn"
+                style={{ padding: "0.4rem 1.2rem", fontSize: "0.85rem" }}
+              >
+                get started
+              </button>
             </Link>
           </>
         )}
       </div>
 
+      {/* Theme toggle */}
       <button
         onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
         style={{
@@ -95,10 +160,12 @@ export default function Navbar({ loggedIn = false }) {
           cursor: "pointer",
           color: "var(--text)",
           padding: "0.4rem",
+          display: "flex",
+          alignItems: "center",
         }}
       >
         {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
       </button>
-    </nav>
+    </motion.nav>
   );
 }

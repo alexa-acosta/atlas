@@ -8,6 +8,8 @@ const developers = [
 ];
 
 export default function About() {
+  const loggedIn = Boolean(localStorage.getItem("isLoggedIn"));
+
   return (
     <div
       style={{
@@ -20,10 +22,9 @@ export default function About() {
         overflowX: "hidden",
       }}
     >
-      <Navbar />
+      <Navbar loggedIn={loggedIn} />
 
       <main style={{ flexGrow: 1, paddingTop: "8rem", paddingBottom: "6rem" }}>
-        {/* About Section */}
         <section
           style={{
             padding: "3rem 2.5rem 6rem",
@@ -45,15 +46,22 @@ export default function About() {
               transition={{ duration: 0.8 }}
             >
               <h1
-                className="page-title"
                 style={{
+                  fontFamily: "var(--font-serif)",
                   fontSize: "clamp(2.5rem, 5vw, 4rem)",
                   marginBottom: "2rem",
+                  lineHeight: 1.1,
                 }}
               >
                 About Atlas
               </h1>
-              <p className="page-subtitle">
+              <p
+                style={{
+                  color: "var(--text-dim)",
+                  lineHeight: 1.9,
+                  fontSize: "1rem",
+                }}
+              >
                 Atlas was inspired by our own experiences navigating the
                 internship search. From verifying the legitimacy of internship
                 offers to receiving suspicious recruiter emails, we saw
@@ -132,7 +140,6 @@ export default function About() {
           </div>
         </section>
 
-        {/* Meet the Developers */}
         <section
           style={{ padding: "0 2.5rem 4rem", maxWidth: 1100, margin: "0 auto" }}
         >
@@ -140,8 +147,8 @@ export default function About() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="page-title"
             style={{
+              fontFamily: "var(--font-serif)",
               fontSize: "clamp(2rem, 4vw, 3rem)",
               textAlign: "center",
               marginBottom: "4rem",
