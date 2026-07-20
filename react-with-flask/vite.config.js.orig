@@ -6,7 +6,11 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/api': 'http://localhost:5000',
+<<<<<<< HEAD
+      "/api": "http://localhost:5000",
+=======
+      '/api': 'http://127.0.0.1:5000', // because apple is stupid and occupies localhost:5000 for airtunes
+>>>>>>> 0b1528dd40002cec3dd451956be101cf2750b5d6
     },
   },
   optimizeDeps: {

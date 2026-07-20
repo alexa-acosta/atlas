@@ -244,6 +244,7 @@ tbody tr:hover {
   transition: background 0.15s;
 }
 
+<<<<<<< HEAD
 :root {
   --bg: #081516;
   --bg-card: #092d31;
@@ -266,7 +267,7 @@ html:not(.dark) {
   --text: #0a1f20;
   --text-dim: #3d7880;
   --border: #a0c8ce;
-}
+=======
 .initiate-shell,
 .initiate-loading-shell {
   flex: 1;
@@ -486,4 +487,5 @@ html:not(.dark) {
   .initiate-chip {
     width: 100%;
   }
+>>>>>>> 0b1528dd40002cec3dd451956be101cf2750b5d6
 }

@@ -3,10 +3,19 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Navigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 
+function readSavedResult() {
+  try {
+    const savedResults = JSON.parse(sessionStorage.getItem("latest_scan_results") ?? "[]");
+    return Array.isArray(savedResults) ? savedResults[0] : null;
+  } catch {
+    return null;
+  }
+}
+
 export default function Results() {
   const { state } = useLocation();
   const navigate = useNavigate();
-  const result = state?.result;
+  const result = state?.result ?? state?.scans?.[0] ?? readSavedResult();
   const [showDetails, setShowDetails] = useState(false);
 
   if (!result) return <Navigate to="/home" replace />;
