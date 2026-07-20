@@ -243,3 +243,27 @@ tbody tr:hover {
   background: var(--teal-light) !important;
   transition: background 0.15s;
 }
+
+:root {
+  --bg: #081516;
+  --bg-card: #092d31;
+  --bg-input: #435a5c;
+  --teal: #156b75;
+  --teal-light: #2e9194;
+  --text: #e8f0ee;
+  --text-dim: #7aa2a8;
+  --border: #1e3d4a;
+  --font-mono: "Courier Prime", "Courier New", monospace;
+  --font-serif: "Playfair Display", Georgia, serif;
+}
+
+html:not(.dark) {
+  --bg: #f0f8f8;
+  --bg-card: #daf0f2;
+  --bg-input: #b3d8db;
+  --teal: #156b75;
+  --teal-light: #2e9194;
+  --text: #0a1f20;
+  --text-dim: #3d7880;
+  --border: #a0c8ce;
+}
