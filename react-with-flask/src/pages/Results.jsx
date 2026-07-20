@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Navigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 function readSavedResult() {
   try {
@@ -17,12 +19,25 @@ export default function Results() {
   const navigate = useNavigate();
   const result = state?.result ?? state?.scans?.[0] ?? readSavedResult();
   const [showDetails, setShowDetails] = useState(false);
+  const resultRef = useRef(null);
 
   if (!result) return <Navigate to="/home" replace />;
 
   const verdictColor = { safe: "#2a9d87", medium: "#e9c46a", high: "#e76f51" };
   const color = verdictColor[result.verdict] ?? "#2a9d87";
   const barWidth = `${result.risk_score}%`;
+
+  async function handleDownloadPDF() {
+    const canvas = await html2canvas(resultRef.current, {
+      backgroundColor: "#092d31",
+    });
+    const imgData = canvas.toDataURL("image/png");
+    const pageWidth = 595.28; // A4 width in points
+    const imageHeight = (canvas.height * pageWidth) / canvas.width;
+    const pdf = new jsPDF({ unit: "pt", format: [pageWidth, imageHeight] });
+    pdf.addImage(imgData, "PNG", 0, 0, pageWidth, imageHeight);
+    pdf.save(`scan_result_${result.id}.pdf`);
+  }
 
   return (
     <div className="page">
@@ -99,7 +114,37 @@ export default function Results() {
           <button className="btn-outline" onClick={() => navigate("/home")}>
             new scan
           </button>
+          <button className="btn-outline" onClick={handleDownloadPDF}>
+            download PDF
+          </button>
         </div>
+      </div>
+      {/* div styling for PDF generation */}
+      <div 
+      ref={resultRef}
+      style={{ 
+        position: "absolute",
+        top: "0",
+        left: "-9999px",
+        width: "700px",
+        padding: "2rem",
+        backgroundColor: "#092d31",
+        color: "var(--text)",
+      }}>
+        <h1 style={{ fontFamily: "var(--font-serif)", marginBottom: "0.75rem" }}> Analysis</h1>
+        <p style={{ marginBottom: "0.75rem" }}>Score: <span style={{ color, fontWeight: 700 }}>
+          {result.verdict?.toUpperCase()} - {result.risk_score}/100
+        </span></p>
+        <h1 style={{ marginBottom: "0.75rem" }}> Reasoning:</h1>
+        <ul style={{ marginBottom: "2rem", paddingLeft: "1.25rem", lineHeight: 2.2 }}>
+          {result.indicators?.length ? (
+            result.indicators.map((ind, i) => <li key={i}>{ind}</li>)
+          ) : (
+            <li>No indicators available.</li>
+          )}
+        </ul>
+        <h1 style={{ marginTop: "1.5rem", marginBottom: "0.75rem" }}>Full Analysis</h1>
+        <p style={{ marginBottom: "0.75rem", lineHeight: 2.2 }}>{result.summary || "No summary available."}</p>
       </div>
 
       {showDetails && (
