@@ -284,7 +284,6 @@ html:not(.dark) {
   padding: 4.5rem 3rem;
   border-radius: 22px;
   background:
-    radial-gradient(circle at center, rgba(22, 107, 117, 0.38), rgba(8, 21, 22, 0.94) 54%),
     var(--bg);
   border: 1px solid rgba(46, 145, 148, 0.16);
   display: flex;

@@ -155,7 +155,7 @@ body {
   font-size: 0.95rem;
   line-height: 1.7;
   color: var(--text);
-  max-width: 700px;
+  max-width: 100%;
   margin-bottom: 2rem;
 }
 
@@ -281,14 +281,7 @@ html:not(.dark) {
   width: min(100%, 980px);
   min-height: 68vh;
   padding: 4.5rem 3rem;
-  border-radius: 22px;
-  background:
-    radial-gradient(
-      circle at center,
-      rgba(22, 107, 117, 0.38),
-      rgba(8, 21, 22, 0.94) 54%
-    ),
-    var(--bg);
+  background: var(--bg);
   display: flex;
   flex-direction: column;
   justify-content: center;
