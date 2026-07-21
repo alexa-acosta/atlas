@@ -1,6 +1,12 @@
-import { useState, useRef } from "react";
+<<<<<<< HEAD
+import { useState } from "react";
 import { useLocation, useNavigate, Navigate } from "react-router-dom";
 import { motion } from "framer-motion";
+=======
+import { useState, useRef } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
+>>>>>>> history_page
 import Navbar from "../components/Navbar";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
@@ -200,6 +206,7 @@ export default function Results() {
             </div>
           </div>
 
+<<<<<<< HEAD
           {/* Actions */}
           <div style={{ display: "flex", gap: "1rem" }}>
             <button className="btn" onClick={() => setShowDetails(true)}>
@@ -227,57 +234,48 @@ export default function Results() {
             >
               new scan
             </button>
-            <button className="btn-outline" onClick={handleDownloadPDF}>
-              download PDF
-            </button>
           </div>
         </motion.div>
+=======
+        <div style={{ display: "flex", gap: "1rem" }}>
+          <button className="btn" onClick={() => setShowDetails(true)}>
+            view details
+          </button>
+          <button className="btn-outline" onClick={() => navigate("/home")}>
+            new scan
+          </button>
+          <button className="btn-outline" onClick={handleDownloadPDF}>
+            download PDF
+          </button>
+        </div>
+>>>>>>> history_page
       </div>
-
-      <div
-        ref={resultRef}
-        style={{
-          position: "absolute",
-          top: "0",
-          left: "-9999px",
-          width: "700px",
-          padding: "2rem",
-          backgroundColor: "#092d31",
-          color: "var(--text)",
-        }}
-      >
-        <h1
-          style={{ fontFamily: "var(--font-serif)", marginBottom: "0.75rem" }}
-        >
-          {" "}
-          Analysis
-        </h1>
-        <p style={{ marginBottom: "0.75rem" }}>
-          Score:{" "}
-          <span style={{ color, fontWeight: 700 }}>
-            {result.verdict?.toUpperCase()} - {result.risk_score}/100
-          </span>
-        </p>
+      {/* div styling for PDF generation */}
+      <div 
+      ref={resultRef}
+      style={{ 
+        position: "absolute",
+        top: "0",
+        left: "-9999px",
+        width: "700px",
+        padding: "2rem",
+        backgroundColor: "#092d31",
+        color: "var(--text)",
+      }}>
+        <h1 style={{ fontFamily: "var(--font-serif)", marginBottom: "0.75rem" }}> Analysis</h1>
+        <p style={{ marginBottom: "0.75rem" }}>Score: <span style={{ color, fontWeight: 700 }}>
+          {result.verdict?.toUpperCase()} - {result.risk_score}/100
+        </span></p>
         <h1 style={{ marginBottom: "0.75rem" }}> Reasoning:</h1>
-        <ul
-          style={{
-            marginBottom: "2rem",
-            paddingLeft: "1.25rem",
-            lineHeight: 2.2,
-          }}
-        >
+        <ul style={{ marginBottom: "2rem", paddingLeft: "1.25rem", lineHeight: 2.2 }}>
           {result.indicators?.length ? (
             result.indicators.map((ind, i) => <li key={i}>{ind}</li>)
           ) : (
             <li>No indicators available.</li>
           )}
         </ul>
-        <h1 style={{ marginTop: "1.5rem", marginBottom: "0.75rem" }}>
-          Full Analysis
-        </h1>
-        <p style={{ marginBottom: "0.75rem", lineHeight: 2.2 }}>
-          {result.summary || "No summary available."}
-        </p>
+        <h1 style={{ marginTop: "1.5rem", marginBottom: "0.75rem" }}>Full Analysis</h1>
+        <p style={{ marginBottom: "0.75rem", lineHeight: 2.2 }}>{result.summary || "No summary available."}</p>
       </div>
 
       {/* Details modal */}

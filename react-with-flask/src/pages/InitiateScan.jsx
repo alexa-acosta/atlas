@@ -290,9 +290,7 @@ export default function InitiateScan() {
 
           <div className="initiate-progress">
             <span>{savedCount} of 3 ready</span>
-            {submissions.offerLetterName && !offerLetterReady && (
-              <span>offer letter must be re-uploaded before scanning</span>
-            )}
+            {submissions.offerLetterName && !offerLetterReady && <span></span>}
           </div>
 
           <div className="initiate-actions">
