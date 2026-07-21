@@ -13,7 +13,6 @@ import { SiGooglechrome, SiGmail } from "react-icons/si";
 import { FaLinkedin } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-// Counter with no TypeScript types
 function Counter({ end, suffix = "", duration = 2 }) {
   const [count, setCount] = useState(0);
   const ref = useRef(null);
@@ -60,8 +59,6 @@ export default function Landing() {
       }}
     >
       <Navbar />
-
-      {/* Hero */}
       <section
         style={{
           position: "relative",
@@ -72,7 +69,6 @@ export default function Landing() {
           overflow: "hidden",
         }}
       >
-        {/* Scanlines */}
         <div
           style={{
             position: "absolute",
@@ -83,7 +79,6 @@ export default function Landing() {
               "repeating-linear-gradient(0deg, transparent, transparent 1px, #000 1px, #000 2px)",
           }}
         />
-        {/* Grid */}
         <div
           style={{
             position: "absolute",
@@ -95,7 +90,6 @@ export default function Landing() {
             backgroundSize: "40px 40px",
           }}
         />
-        {/* Glow */}
         <div
           style={{
             position: "absolute",
@@ -168,8 +162,6 @@ export default function Landing() {
           </motion.button>
         </div>
       </section>
-
-      {/* Stats Bar */}
       <section
         style={{
           borderTop: "1px solid var(--border)",
@@ -217,8 +209,6 @@ export default function Landing() {
           ))}
         </div>
       </section>
-
-      {/* How Atlas Works */}
       <section style={{ padding: "6rem 2.5rem" }}>
         <div style={{ maxWidth: 1000, margin: "0 auto" }}>
           <motion.h2
@@ -246,8 +236,6 @@ export default function Landing() {
             steps, and automatically extract the important job details such as
             the title, location, qualifications, and work style.
           </motion.p>
-
-          {/* Flow diagram */}
           <div
             style={{
               display: "flex",
@@ -385,8 +373,6 @@ export default function Landing() {
           </div>
         </div>
       </section>
-
-      {/* When to Use Atlas */}
       <section style={{ padding: "6rem 2.5rem", background: "var(--bg-card)" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <motion.h2
@@ -475,8 +461,6 @@ export default function Landing() {
           </div>
         </div>
       </section>
-
-      {/* Coming Soon */}
       <section style={{ padding: "8rem 2.5rem", textAlign: "center" }}>
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
@@ -487,8 +471,6 @@ export default function Landing() {
         >
           Coming Soon!
         </motion.h2>
-
-        {/* Box with hover icons */}
         <div
           style={{
             position: "relative",
@@ -539,8 +521,6 @@ export default function Landing() {
           </div>
           <FloatingIcons />
         </div>
-
-        {/* Marquee */}
         <div
           style={{
             position: "relative",
@@ -606,8 +586,6 @@ export default function Landing() {
           </motion.div>
         </div>
       </section>
-
-      {/* Footer */}
       <footer
         style={{
           padding: "3rem 2.5rem",
@@ -636,7 +614,6 @@ export default function Landing() {
   );
 }
 
-// Floating icons component — bobs out of the box on hover
 function FloatingIcons() {
   const [hovered, setHovered] = useState(false);
   const icons = [SiGooglechrome, SiGmail, FaLinkedin];

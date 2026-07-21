@@ -65,7 +65,7 @@ body {
 
 .btn {
   background-color: var(--teal);
-  color: var(--text);
+  color: #e8f0ee;
   border: none;
   border-radius: 999px;
   padding: 0.55rem 1.4rem;
@@ -99,7 +99,7 @@ body {
 
 .login-btn {
   background-color: var(--dark-teal);
-  color: var(--text);
+  color: #e8f0ee;
   border: none;
   border-radius: 999px;
   padding: 0.55rem 1.4rem;
@@ -244,29 +244,18 @@ tbody tr:hover {
   transition: background 0.15s;
 }
 
-:root {
-  --bg: #081516;
-  --bg-card: #092d31;
-  --bg-input: #435a5c;
+html:not(.dark) {
+  --bg: #d9dfde;
+  --bg-card: #dce9e9;
+  --bg-input: #c8dfe0;
   --teal: #156b75;
   --teal-light: #2e9194;
-  --text: #e8f0ee;
-  --text-dim: #7aa2a8;
-  --border: #1e3d4a;
-  --font-mono: "Courier Prime", "Courier New", monospace;
-  --font-serif: "Playfair Display", Georgia, serif;
+  --dark-teal: #0a2426;
+  --text: #1c3537;
+  --text-dim: #4d8590;
+  --border: #aecfd3;
 }
 
-html:not(.dark) {
-  --bg: #f0f8f8;
-  --bg-card: #daf0f2;
-  --bg-input: #b3d8db;
-  --teal: #156b75;
-  --teal-light: #2e9194;
-  --text: #0a1f20;
-  --text-dim: #3d7880;
-  --border: #a0c8ce;
-}
 .initiate-shell,
 .initiate-loading-shell {
   flex: 1;
@@ -316,7 +305,7 @@ html:not(.dark) {
   border: none;
   border-radius: 999px;
   background: var(--teal);
-  color: var(--text);
+  color: #e8f0ee;
   padding: 0.9rem 1.2rem;
   font-family: var(--font-mono);
   font-size: 0.95rem;

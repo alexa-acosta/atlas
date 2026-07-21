@@ -1,14 +1,35 @@
 import { motion } from "framer-motion";
+import { useLocation } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import heroImage from "../assets/atlas-hero.jpg";
+import alexaImg from "../assets/alexa_acosta.JPG";
+import brendanImg from "../assets/brendan_chuy.png";
+import tetianaImg from "../assets/tetiana_tsarenko.jpg";
 
 const developers = [
-  { name: "Alexa Acosta", title: "CS @ UF 2028" },
-  { name: "Brendan Chuy", title: "CS + Econ @ CU 2028" },
-  { name: "Tetiana Tsarenko", title: "CS @ CU 2028" },
+  {
+    name: "Alexa Acosta",
+    title: "CS @ UF 2028",
+    image: alexaImg,
+  },
+  {
+    name: "Brendan Chuy",
+    title: "CS + Econ @ CU 2028",
+    image: brendanImg,
+  },
+  {
+    name: "Tetiana Tsarenko",
+    title: "CS @ CU 2028",
+    image: tetianaImg,
+  },
 ];
 
 export default function About() {
-  const loggedIn = Boolean(localStorage.getItem("isLoggedIn"));
+  const { state } = useLocation();
+  const loggedIn =
+    state?.loggedIn !== undefined
+      ? state.loggedIn
+      : localStorage.getItem("isLoggedIn") === "true";
 
   return (
     <div
@@ -123,17 +144,16 @@ export default function About() {
                     justifyContent: "center",
                   }}
                 >
-                  <span
+                  <img
+                    src={heroImage}
+                    alt="Atlas Security"
                     style={{
-                      fontFamily: "var(--font-serif)",
-                      fontSize: "5rem",
-                      fontWeight: 700,
-                      color: "var(--teal-light)",
-                      opacity: 0.4,
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      borderRadius: "1.25rem",
                     }}
-                  >
-                    A
-                  </span>
+                  />
                 </div>
               </div>
             </motion.div>
@@ -199,25 +219,21 @@ export default function About() {
                     width: 120,
                     height: 120,
                     borderRadius: "50%",
-                    background:
-                      "linear-gradient(135deg, var(--teal), var(--bg-input))",
                     marginBottom: "1.5rem",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
+                    overflow: "hidden",
                     border: "3px solid var(--bg)",
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
                   }}
                 >
-                  <span
+                  <img
+                    src={dev.image}
+                    alt={dev.name}
                     style={{
-                      fontFamily: "var(--font-serif)",
-                      fontSize: "2.5rem",
-                      fontWeight: 700,
-                      color: "rgba(255,255,255,0.7)",
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
                     }}
-                  >
-                    {dev.name.charAt(0)}
-                  </span>
+                  />
                 </div>
                 <h3
                   style={{
