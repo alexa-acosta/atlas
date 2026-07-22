@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <!-- Key ring -->
+  <circle cx="35" cy="38" r="22" stroke="#1a6b5c" stroke-width="10" fill="none"/>
+  <circle cx="35" cy="38" r="10" fill="#1a6b5c"/>
+  <!-- Key shaft -->
+  <rect x="52" y="34" width="38" height="9" rx="4.5" fill="#1a6b5c"/>
+  <!-- Key teeth -->
+  <rect x="74" y="43" width="8" height="10" rx="2" fill="#1a6b5c"/>
+  <rect x="61" y="43" width="8" height="7" rx="2" fill="#1a6b5c"/>
+</svg>

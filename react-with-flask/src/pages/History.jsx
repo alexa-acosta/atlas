@@ -154,7 +154,6 @@ export default function History() {
             view its full analysis.
           </p>
 
-          {/* Loading */}
           {loading && (
             <div
               style={{
@@ -344,8 +343,6 @@ export default function History() {
           )}
         </motion.div>
       </div>
-
-      {/* Scan detail modal */}
       {selectedScan && (
         <motion.div
           initial={{ opacity: 0 }}
@@ -495,7 +492,7 @@ export default function History() {
                     display: "flex",
                     gap: "0.75rem",
                     alignItems: "flex-start",
-                    background: "#ffffff",
+                    background: "#156b75",
                     borderRadius: "8px",
                     padding: "0.7rem 1rem",
                     border: "1px solid var(--border)",
