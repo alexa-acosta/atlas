@@ -3,11 +3,13 @@ import sys
 import tempfile
 from pathlib import Path
 
-from flask import Flask, jsonify, request, session
+from flask import Flask, abort, jsonify, request, send_from_directory, session
 from flask_bcrypt import Bcrypt
+from werkzeug.utils import safe_join
 
 # sets a variable pointing to the main atlas directory holding all folders and code
 ROOT_DIR = Path(__file__).resolve().parents[2]
+FRONTEND_DIST = ROOT_DIR / "react-with-flask" / "dist"
 # sys.path = list of folders Python searches when importing; inserted root_dir to
 # allow importing of our database
 sys.path.insert(0, str(ROOT_DIR))
@@ -23,6 +25,11 @@ from src.database import (
 
 app = Flask(__name__)
 app.secret_key = os.getenv("ATLAS_SECRET_KEY", "dev-secret-change-in-prod")
+app.config.update(
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE="Lax",
+    SESSION_COOKIE_SECURE=os.getenv("ATLAS_ENV") == "production",
+)
 
 bcrypt = Bcrypt(app)
 
@@ -157,6 +164,24 @@ def scan():
             "indicators": result.indicators,
         }
     }), 201
+
+
+@app.route("/api/health", methods=["GET"])
+def health():
+    return jsonify({"ok": True}), 200
+
+
+@app.route("/", defaults={"path": ""})
+@app.route("/<path:path>")
+def frontend(path):
+    if path.startswith("api/"):
+        abort(404)
+
+    asset_path = safe_join(str(FRONTEND_DIST), path)
+    if path and asset_path and Path(asset_path).is_file():
+        return send_from_directory(FRONTEND_DIST, path)
+
+    return send_from_directory(FRONTEND_DIST, "index.html")
 
 
 if __name__ == "__main__":
