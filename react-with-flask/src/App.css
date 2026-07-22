@@ -18,6 +18,7 @@
   --text: #e8f0ee;
   --text-dim: #7aa2a8;
   --border: #1e3d4a;
+  --history-indicator-bg: var(--border);
   --font-mono: "Courier Prime", "Courier New", monospace;
   --font-serif: "Playfair Display", Georgia, serif;
 }
@@ -254,6 +255,7 @@ html:not(.dark) {
   --text: #1c3537;
   --text-dim: #4d8590;
   --border: #aecfd3;
+  --history-indicator-bg: #ffffff;
 }
 
 .initiate-shell,

@@ -37,23 +37,22 @@ def init_db():
                 created_at    TEXT    NOT NULL
             )
         """)
-        try:
-            c.execute("ALTER TABLE scans ADD COLUMN mode TEXT NOT NULL DEFAULT 'unknown'")
-        except sqlite3.OperationalError:
-            pass
-        try:
-            c.execute("ALTER TABLE scans ADD COLUMN source TEXT NOT NULL DEFAULT ''")
-        except sqlite3.OperationalError:
-            pass
-        try:
-            c.execute("ALTER TABLE scans ADD COLUMN user_id INTEGER")
-        except sqlite3.OperationalError:
-            pass
+        existing_columns = {
+            row[1] for row in c.execute("PRAGMA table_info(scans)").fetchall()
+        }
+        migrations = {
+            "mode": "TEXT NOT NULL DEFAULT 'unknown'",
+            "source": "TEXT NOT NULL DEFAULT ''",
+            "user_id": "INTEGER",
+            "indicators": "TEXT NOT NULL DEFAULT '[]'",
+            "summary": "TEXT NOT NULL DEFAULT ''",
+        }
+
+        for column, definition in migrations.items():
+            if column not in existing_columns:
+                c.execute(f"ALTER TABLE scans ADD COLUMN {column} {definition}")
+
         c.commit()
-        try:
-            c.execute("ALTER TABLE scans ADD COLUMN indicators TEXT NOT NULL DEFAULT '[]'")
-        except sqlite3.OperationalError:
-            pass
 
 
 def save_scan(raw_input: str, risk_score: int, verdict: str,
