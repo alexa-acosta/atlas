@@ -57,7 +57,8 @@ class AtlasScanner:
             mode=mode,
             source=source,
             user_id=user_id,
-            indicators=scan_result.indicators
+            indicators=scan_result.indicators,
+            summary=scan_result.summary,
         )
         scan_result.scan_id = scan_id
         self.output_formatter.display(scan_result, mode=mode, source=source)

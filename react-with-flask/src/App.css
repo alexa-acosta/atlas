@@ -18,6 +18,7 @@
   --text: #e8f0ee;
   --text-dim: #7aa2a8;
   --border: #1e3d4a;
+  --history-indicator-bg: var(--border);
   --font-mono: "Courier Prime", "Courier New", monospace;
   --font-serif: "Playfair Display", Georgia, serif;
 }
@@ -65,7 +66,7 @@ body {
 
 .btn {
   background-color: var(--teal);
-  color: var(--text);
+  color: #e8f0ee;
   border: none;
   border-radius: 999px;
   padding: 0.55rem 1.4rem;
@@ -99,7 +100,7 @@ body {
 
 .login-btn {
   background-color: var(--dark-teal);
-  color: var(--text);
+  color: #e8f0ee;
   border: none;
   border-radius: 999px;
   padding: 0.55rem 1.4rem;
@@ -155,7 +156,7 @@ body {
   font-size: 0.95rem;
   line-height: 1.7;
   color: var(--text);
-  max-width: 700px;
+  max-width: 100%;
   margin-bottom: 2rem;
 }
 
@@ -244,6 +245,19 @@ tbody tr:hover {
   transition: background 0.15s;
 }
 
+html:not(.dark) {
+  --bg: #d9dfde;
+  --bg-card: #dce9e9;
+  --bg-input: #c8dfe0;
+  --teal: #156b75;
+  --teal-light: #2e9194;
+  --dark-teal: #0a2426;
+  --text: #1c3537;
+  --text-dim: #4d8590;
+  --border: #aecfd3;
+  --history-indicator-bg: #ffffff;
+}
+
 .initiate-shell,
 .initiate-loading-shell {
   flex: 1;
@@ -258,11 +272,7 @@ tbody tr:hover {
   width: min(100%, 980px);
   min-height: 68vh;
   padding: 4.5rem 3rem;
-  border-radius: 22px;
-  background:
-    radial-gradient(circle at center, rgba(22, 107, 117, 0.38), rgba(8, 21, 22, 0.94) 54%),
-    var(--bg);
-  border: 1px solid rgba(46, 145, 148, 0.16);
+  background: var(--bg);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -297,13 +307,15 @@ tbody tr:hover {
   border: none;
   border-radius: 999px;
   background: var(--teal);
-  color: var(--text);
+  color: #e8f0ee;
   padding: 0.9rem 1.2rem;
   font-family: var(--font-mono);
   font-size: 0.95rem;
   letter-spacing: 0.05em;
   cursor: pointer;
-  transition: transform 0.15s ease, background-color 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    background-color 0.15s ease;
 }
 
 .initiate-chip:hover {

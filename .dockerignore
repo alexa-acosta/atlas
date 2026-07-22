@@ -1,0 +1,14 @@
+.git
+.github
+.env
+.venv
+venv
+**/.venv
+**/venv
+**/__pycache__
+**/.pytest_cache
+**/*.pyc
+**/node_modules
+react-with-flask/dist
+data/*.db
+*.egg-info

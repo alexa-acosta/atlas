@@ -19,6 +19,7 @@ export default function Login() {
     setError("");
     try {
       await login(email, password);
+      localStorage.setItem("isLoggedIn", "true");
       navigate("/home");
     } catch (err) {
       setError(err.message);
@@ -34,7 +35,7 @@ export default function Login() {
         style={{
           display: "flex",
           justifyContent: "center",
-          padding: "4rem 1rem",
+          padding: "8rem 1rem 4rem",
         }}
       >
         <div className="card" style={{ width: "100%", maxWidth: "480px" }}>

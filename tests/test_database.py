@@ -1,6 +1,7 @@
 import contextlib
 import io
 import os
+import sqlite3
 import tempfile
 import unittest
 
@@ -53,6 +54,31 @@ class TestDatabase(unittest.TestCase):
             database.get_scan_history()
 
         self.assertIn("No scans in history yet.", output.getvalue())
+
+    def test_init_db_migrates_existing_scans_table(self):
+        with sqlite3.connect(database.DB_PATH) as connection:
+            connection.execute("""
+                CREATE TABLE scans (
+                    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+                    timestamp  TEXT    NOT NULL,
+                    raw_input  TEXT    NOT NULL,
+                    risk_score INTEGER NOT NULL,
+                    verdict    TEXT    NOT NULL
+                )
+            """)
+            connection.execute(
+                "INSERT INTO scans (timestamp, raw_input, risk_score, verdict) "
+                "VALUES (?, ?, ?, ?)",
+                ("2026-07-22T09:00:00+00:00", "legacy input", 42, "medium"),
+            )
+
+        database.init_db()
+
+        scans = database.list_scans()
+        self.assertEqual(len(scans), 1)
+        self.assertEqual(scans[0]["summary"], "")
+        self.assertEqual(scans[0]["indicators"], [])
+        self.assertEqual(scans[0]["mode"], "unknown")
 
 
 if __name__ == "__main__":

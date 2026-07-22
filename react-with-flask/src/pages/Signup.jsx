@@ -43,7 +43,7 @@ export default function Signup() {
         style={{
           display: "flex",
           justifyContent: "center",
-          padding: "4rem 1rem",
+          padding: "8rem 1rem 4rem",
         }}
       >
         <div className="card" style={{ width: "100%", maxWidth: "480px" }}>
