@@ -495,7 +495,7 @@ export default function History() {
                     display: "flex",
                     gap: "0.75rem",
                     alignItems: "flex-start",
-                    background: "#ffffff",
+                    background: "var(--history-indicator-bg)",
                     borderRadius: "8px",
                     padding: "0.7rem 1rem",
                     border: "1px solid var(--border)",
